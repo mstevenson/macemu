@@ -78,12 +78,17 @@
     BOOL useTrackPad = [[NSUserDefaults standardUserDefaults] boolForKey:@"trackpad"];
     Class pointingDeviceClass = useTrackPad ? [B2TrackPad class] : [B2TouchScreen class];
     pointingDeviceView = [[pointingDeviceClass alloc] initWithFrame:self.view.bounds];
-    pointingDeviceView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     [self.view insertSubview:pointingDeviceView aboveSubview:sharedScreenView];
     if (@available(iOS 13.4, *)) {
         pointerInteraction = [[UIPointerInteraction alloc] initWithDelegate:self];
         [pointingDeviceView addInteraction:pointerInteraction];
     }
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    pointingDeviceView.frame = self.view.bounds;
+    [sharedScreenView setNeedsUpdateConstraints];
 }
 
 - (BOOL)canBecomeFirstResponder {
@@ -186,7 +191,6 @@
             keyboardView.hidden = YES;
         }
     }
-    
 }
 
 - (void)loadKeyboardView {

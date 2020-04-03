@@ -15,22 +15,36 @@
                         <viewControllerLayoutGuide type="top" id="3qu-if-cqD"/>
                         <viewControllerLayoutGuide type="bottom" id="E8N-5m-rYl"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="yux-Bx-Q0e">
+                    <view key="view" autoresizesSubviews="NO" contentMode="scaleToFill" id="yux-Bx-Q0e">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tl0-Wm-vKY" customClass="B2ScreenView">
+                            <view autoresizesSubviews="NO" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tl0-Wm-vKY" customClass="B2ScreenView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <connections>
+                                    <outletCollection property="marginConstraints" destination="xTL-LR-svD" id="C4P-06-iQf"/>
+                                    <outletCollection property="marginConstraints" destination="m8c-WU-Qrc" id="Ebs-hk-710"/>
+                                    <outletCollection property="fullScreenConstraints" destination="SNv-OF-6vD" id="cSH-4y-qZS"/>
+                                    <outletCollection property="fullScreenConstraints" destination="dXm-ie-STI" id="uDM-5P-vey"/>
+                                </connections>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="Tl0-Wm-vKY" firstAttribute="top" secondItem="yux-Bx-Q0e" secondAttribute="top" id="SNv-OF-6vD"/>
+                            <constraint firstAttribute="bottom" secondItem="Tl0-Wm-vKY" secondAttribute="bottom" id="dXm-ie-STI"/>
                             <constraint firstAttribute="trailing" secondItem="Tl0-Wm-vKY" secondAttribute="trailing" id="kb8-F9-ipd"/>
                             <constraint firstItem="E8N-5m-rYl" firstAttribute="top" secondItem="Tl0-Wm-vKY" secondAttribute="bottom" id="m8c-WU-Qrc"/>
                             <constraint firstItem="Tl0-Wm-vKY" firstAttribute="leading" secondItem="yux-Bx-Q0e" secondAttribute="leading" id="wh1-wW-BgD"/>
                             <constraint firstItem="Tl0-Wm-vKY" firstAttribute="top" secondItem="3qu-if-cqD" secondAttribute="bottom" id="xTL-LR-svD"/>
                         </constraints>
+                        <variation key="default">
+                            <mask key="constraints">
+                                <exclude reference="SNv-OF-6vD"/>
+                                <exclude reference="dXm-ie-STI"/>
+                            </mask>
+                        </variation>
                     </view>
                     <nil key="simulatedTopBarMetrics"/>
                     <connections>
