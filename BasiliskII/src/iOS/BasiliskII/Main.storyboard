@@ -71,14 +71,13 @@
             </objects>
             <point key="canvasLocation" x="-310" y="437"/>
         </scene>
-        <!--Settings-->
+        <!--BasiliskII Settings-->
         <scene sceneID="K68-AJ-CIu">
             <objects>
                 <tableViewController clearsSelectionOnViewWillAppear="NO" id="yeB-gw-Euc" customClass="B2SettingsRootTableViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="fbS-mU-25m">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="fbS-mU-25m">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <sections>
                             <tableViewSection id="bDd-0O-Rew">
                                 <cells>
@@ -202,7 +201,7 @@
                                             <segue destination="tfI-j3-tbN" kind="showDetail" id="IMy-JZ-Yj3"/>
                                         </connections>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="Nir-Wr-IsI" imageView="NDH-iR-sCR" style="IBUITableViewCellStyleDefault" id="HaH-wJ-wOZ" userLabel="Memory &amp; Misc">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" textLabel="Nir-Wr-IsI" imageView="NDH-iR-sCR" style="IBUITableViewCellStyleDefault" id="HaH-wJ-wOZ" userLabel="Documents">
                                         <rect key="frame" x="0.0" y="248" width="375" height="44"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="HaH-wJ-wOZ" id="onA-nu-8bM">
@@ -222,7 +221,6 @@
                                                 </imageView>
                                             </subviews>
                                         </tableViewCellContentView>
-                                        <inset key="separatorInset" minX="15" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
                                             <segue destination="aW7-W8-Lpy" kind="showDetail" id="oBX-ov-qqq"/>
                                         </connections>
@@ -235,7 +233,7 @@
                             <outlet property="delegate" destination="yeB-gw-Euc" id="Nlb-L8-X0u"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Settings" id="obB-m6-kYL">
+                    <navigationItem key="navigationItem" title="BasiliskII Settings" id="obB-m6-kYL">
                         <barButtonItem key="rightBarButtonItem" systemItem="play" id="4Bh-8y-FM3">
                             <connections>
                                 <segue destination="q6o-Bl-g86" kind="unwind" unwindAction="unwindToMainScreen:" id="YKR-9B-LJ0"/>
