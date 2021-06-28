@@ -205,6 +205,8 @@
 			</dict>
 		</dict>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 	<key>UTImportedTypeDeclarations</key>
 	<array>
 		<dict>

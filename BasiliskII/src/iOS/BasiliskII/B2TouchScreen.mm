@@ -46,6 +46,14 @@
     return mouseLoc;
 }
 
+- (BOOL)touchIsIndirectPointer:(UITouch *)touch {
+    if (@available(iOS 13.4, *)) {
+        return [touch type] == UITouchTypeIndirectPointer;
+    } else {
+        return false;
+    }
+}
+
 - (void)mouseDown {
     ADBMouseDown(0);
 }
@@ -54,9 +62,10 @@
     ADBMouseUp(0);
 }
 
-- (CGPoint)effectiveTouchPointForEvent:(UIEvent *)event {
+- (CGPoint)effectiveTouchPointForEvent:(UIEvent *)event withTouch:(UITouch *)touch {
     CGPoint touchLoc = [[event touchesForView:self].anyObject locationInView:self];
-    if (event.timestamp - previousTouchTime < touchTimeThreshold &&
+    if (![self touchIsIndirectPointer:touch] &&
+        event.timestamp - previousTouchTime < touchTimeThreshold &&
         fabs(previousTouchLoc.x - touchLoc.x) < touchDistanceThreshold &&
         fabs(previousTouchLoc.y - touchLoc.y) < touchDistanceThreshold)
         return previousTouchLoc;
@@ -68,17 +77,23 @@
 - (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     [currentTouches unionSet:touches];
     if (![B2AppDelegate sharedInstance].emulatorRunning) return;
-    CGPoint touchLoc = [self effectiveTouchPointForEvent:event];
+    UITouch *touch = touches.anyObject;
+    CGPoint touchLoc = [self effectiveTouchPointForEvent:event withTouch:touch];
     Point mouseLoc = [self mouseLocForCGPoint:touchLoc];
     ADBMouseMoved(mouseLoc.h, mouseLoc.v);
-    [self performSelector:@selector(mouseDown) withObject:nil afterDelay:mouseButtonDelay];
+    if ([self touchIsIndirectPointer:touch]) {
+        [self mouseDown];
+    } else {
+        [self performSelector:@selector(mouseDown) withObject:nil afterDelay:mouseButtonDelay];
+    }
     previousTouchLoc = touchLoc;
     previousTouchTime = event.timestamp;
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
     if (![B2AppDelegate sharedInstance].emulatorRunning) return;
-    CGPoint touchLoc = [self effectiveTouchPointForEvent:event];
+    UITouch *touch = touches.anyObject;
+    CGPoint touchLoc = [self effectiveTouchPointForEvent:event withTouch:touch];
     Point mouseLoc = [self mouseLocForCGPoint:touchLoc];
     ADBMouseMoved(mouseLoc.h, mouseLoc.v);
 }
@@ -87,7 +102,8 @@
     [currentTouches minusSet:touches];
     if (![B2AppDelegate sharedInstance].emulatorRunning) return;
     if (currentTouches.count > 0) return;
-    CGPoint touchLoc = [self effectiveTouchPointForEvent:event];
+    UITouch *touch = touches.anyObject;
+    CGPoint touchLoc = [self effectiveTouchPointForEvent:event withTouch:touch];
     Point mouseLoc = [self mouseLocForCGPoint:touchLoc];
     ADBMouseMoved(mouseLoc.h, mouseLoc.v);
     [self performSelector:@selector(mouseUp) withObject:nil afterDelay:mouseButtonDelay];
