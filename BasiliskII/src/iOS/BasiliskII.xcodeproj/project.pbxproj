@@ -13,6 +13,25 @@
 		281A4CA31CAB2E0F00A380A7 /* B2FileChooserTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 281A4CA21CAB2E0F00A380A7 /* B2FileChooserTableViewCell.m */; };
 		2822DA6918E6325500EE554D /* timer_unix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2822DA6818E6325500EE554D /* timer_unix.cpp */; };
 		283ADAE11CC6CE81003091F5 /* B2SettingsRootTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 283ADAE01CC6CE81003091F5 /* B2SettingsRootTableViewController.m */; };
+		284E59122744343C00E014B9 /* ip_icmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A119A6135500ADF203 /* ip_icmp.c */; };
+		284E59132744343C00E014B9 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379C19A6135500ADF203 /* debug.c */; };
+		284E59142744343C00E014B9 /* ip_output.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A419A6135500ADF203 /* ip_output.c */; };
+		284E59152744343C00E014B9 /* udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37BD19A6135500ADF203 /* udp.c */; };
+		284E59162744343C00E014B9 /* tftp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37BB19A6135500ADF203 /* tftp.c */; };
+		284E59172744343C00E014B9 /* tcp_output.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B419A6135500ADF203 /* tcp_output.c */; };
+		284E59182744343C00E014B9 /* if.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379F19A6135500ADF203 /* if.c */; };
+		284E59192744343C00E014B9 /* tcp_subr.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B519A6135500ADF203 /* tcp_subr.c */; };
+		284E591A2744343C00E014B9 /* mbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A819A6135500ADF203 /* mbuf.c */; };
+		284E591B2744343C00E014B9 /* bootp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379819A6135500ADF203 /* bootp.c */; };
+		284E591C2744343C00E014B9 /* tcp_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B319A6135500ADF203 /* tcp_input.c */; };
+		284E591D2744343C00E014B9 /* slirp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AF19A6135500ADF203 /* slirp.c */; };
+		284E591E2744343C00E014B9 /* sbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AC19A6135500ADF203 /* sbuf.c */; };
+		284E591F2744343C00E014B9 /* cksum.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379A19A6135500ADF203 /* cksum.c */; };
+		284E59202744343C00E014B9 /* ip_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A319A6135500ADF203 /* ip_input.c */; };
+		284E59212744343C00E014B9 /* misc.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AA19A6135500ADF203 /* misc.c */; };
+		284E59222744343C00E014B9 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B119A6135500ADF203 /* socket.c */; };
+		284E59232744343C00E014B9 /* tcp_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B619A6135500ADF203 /* tcp_timer.c */; };
+		284E59242744344F00E014B9 /* libslirp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 284E59092744341800E014B9 /* libslirp.a */; };
 		285033201B488EF90061C869 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 282A8E8D1A500A79008F8F71 /* Main.storyboard */; };
 		285033591B496B2B0061C869 /* B2SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 285033581B496B2B0061C869 /* B2SettingsViewController.m */; };
 		2850335F1B4B270A0061C869 /* B2VolumesSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2850335E1B4B270A0061C869 /* B2VolumesSettingsViewController.m */; };
@@ -82,24 +101,6 @@
 		2898F58618CCAC6C00FE7806 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2898F58518CCAC6C00FE7806 /* CoreAudio.framework */; };
 		2898F58918CCACD500FE7806 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2898F58718CCACD500FE7806 /* AudioToolbox.framework */; };
 		2898F58B18CCAFB300FE7806 /* audio_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2898F54418CB879400FE7806 /* audio_ios.cpp */; };
-		28AD37BF19A6135500ADF203 /* bootp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379819A6135500ADF203 /* bootp.c */; };
-		28AD37C019A6135500ADF203 /* cksum.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379A19A6135500ADF203 /* cksum.c */; };
-		28AD37C119A6135500ADF203 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379C19A6135500ADF203 /* debug.c */; };
-		28AD37C219A6135500ADF203 /* if.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD379F19A6135500ADF203 /* if.c */; };
-		28AD37C319A6135500ADF203 /* ip_icmp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A119A6135500ADF203 /* ip_icmp.c */; };
-		28AD37C419A6135500ADF203 /* ip_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A319A6135500ADF203 /* ip_input.c */; };
-		28AD37C519A6135500ADF203 /* ip_output.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A419A6135500ADF203 /* ip_output.c */; };
-		28AD37C619A6135500ADF203 /* mbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37A819A6135500ADF203 /* mbuf.c */; };
-		28AD37C719A6135500ADF203 /* misc.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AA19A6135500ADF203 /* misc.c */; };
-		28AD37C819A6135500ADF203 /* sbuf.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AC19A6135500ADF203 /* sbuf.c */; };
-		28AD37C919A6135500ADF203 /* slirp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37AF19A6135500ADF203 /* slirp.c */; };
-		28AD37CA19A6135500ADF203 /* socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B119A6135500ADF203 /* socket.c */; };
-		28AD37CB19A6135500ADF203 /* tcp_input.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B319A6135500ADF203 /* tcp_input.c */; };
-		28AD37CC19A6135500ADF203 /* tcp_output.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B419A6135500ADF203 /* tcp_output.c */; };
-		28AD37CD19A6135500ADF203 /* tcp_subr.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B519A6135500ADF203 /* tcp_subr.c */; };
-		28AD37CE19A6135500ADF203 /* tcp_timer.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37B619A6135500ADF203 /* tcp_timer.c */; };
-		28AD37CF19A6135500ADF203 /* tftp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37BB19A6135500ADF203 /* tftp.c */; };
-		28AD37D019A6135500ADF203 /* udp.c in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37BD19A6135500ADF203 /* udp.c */; };
 		28AD37D219A6511700ADF203 /* ext2type.plist in Resources */ = {isa = PBXBuildFile; fileRef = 28AD37D119A6511700ADF203 /* ext2type.plist */; };
 		28AD37D319A6769B00ADF203 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2898F58318CCAC6500FE7806 /* MobileCoreServices.framework */; };
 		28AD37D619A678CE00ADF203 /* NSString+OSType.m in Sources */ = {isa = PBXBuildFile; fileRef = 28AD37D519A678CE00ADF203 /* NSString+OSType.m */; };
@@ -116,6 +117,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		284E59252744344F00E014B9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2898F44618CB719600FE7806 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 284E59082744341800E014B9;
+			remoteInfo = slirp;
+		};
 		2898F47718CB719700FE7806 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2898F44618CB719600FE7806 /* Project object */;
@@ -132,6 +140,18 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		284E59072744341800E014B9 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		2815090E1CC57F81004ECA0A /* B2TouchScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2TouchScreen.h; sourceTree = "<group>"; };
 		2815090F1CC57F81004ECA0A /* B2TouchScreen.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = B2TouchScreen.mm; sourceTree = "<group>"; };
@@ -146,6 +166,7 @@
 		282FDBB918D50879006547A0 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = SOURCE_ROOT; };
 		283ADADF1CC6CE81003091F5 /* B2SettingsRootTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2SettingsRootTableViewController.h; sourceTree = "<group>"; };
 		283ADAE01CC6CE81003091F5 /* B2SettingsRootTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = B2SettingsRootTableViewController.m; sourceTree = "<group>"; };
+		284E59092744341800E014B9 /* libslirp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libslirp.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		285033571B496B2B0061C869 /* B2SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2SettingsViewController.h; sourceTree = "<group>"; };
 		285033581B496B2B0061C869 /* B2SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = B2SettingsViewController.m; sourceTree = "<group>"; };
 		2850335D1B4B270A0061C869 /* B2VolumesSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2VolumesSettingsViewController.h; sourceTree = "<group>"; };
@@ -286,7 +307,7 @@
 		2898F56C18CB92DA00FE7806 /* sys_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = sys_ios.cpp; sourceTree = "<group>"; };
 		2898F57118CBDB6400FE7806 /* video_ios.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = video_ios.mm; sourceTree = "<group>"; };
 		2898F57418CC82DD00FE7806 /* B2ScreenView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2ScreenView.h; sourceTree = "<group>"; };
-		2898F57518CC82DD00FE7806 /* B2ScreenView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = B2ScreenView.mm; sourceTree = "<group>"; };
+		2898F57518CC82DD00FE7806 /* B2ScreenView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = B2ScreenView.mm; sourceTree = "<group>"; usesTabs = 0; };
 		2898F58318CCAC6500FE7806 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		2898F58518CCAC6C00FE7806 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		2898F58718CCACD500FE7806 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
@@ -353,12 +374,20 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		284E59062744341800E014B9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2898F44B18CB719600FE7806 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2854D53419AA4822001B7858 /* libresolv.dylib in Frameworks */,
 				28AD37D319A6769B00ADF203 /* MobileCoreServices.framework in Frameworks */,
+				284E59242744344F00E014B9 /* libslirp.a in Frameworks */,
 				2898F58918CCACD500FE7806 /* AudioToolbox.framework in Frameworks */,
 				2898F58618CCAC6C00FE7806 /* CoreAudio.framework in Frameworks */,
 				2898F45418CB719600FE7806 /* CoreGraphics.framework in Frameworks */,
@@ -487,6 +516,7 @@
 			children = (
 				2898F44E18CB719600FE7806 /* BasiliskII.app */,
 				2898F47218CB719600FE7806 /* BasiliskIITests.xctest */,
+				284E59092744341800E014B9 /* libslirp.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -700,43 +730,43 @@
 			isa = PBXGroup;
 			children = (
 				28AD379819A6135500ADF203 /* bootp.c */,
-				28AD379919A6135500ADF203 /* bootp.h */,
 				28AD379A19A6135500ADF203 /* cksum.c */,
-				28AD379B19A6135500ADF203 /* ctl.h */,
 				28AD379C19A6135500ADF203 /* debug.c */,
-				28AD379D19A6135500ADF203 /* debug.h */,
-				28AD379E19A6135500ADF203 /* icmp_var.h */,
 				28AD379F19A6135500ADF203 /* if.c */,
-				28AD37A019A6135500ADF203 /* if.h */,
 				28AD37A119A6135500ADF203 /* ip_icmp.c */,
-				28AD37A219A6135500ADF203 /* ip_icmp.h */,
 				28AD37A319A6135500ADF203 /* ip_input.c */,
 				28AD37A419A6135500ADF203 /* ip_output.c */,
-				28AD37A519A6135500ADF203 /* ip.h */,
-				28AD37A619A6135500ADF203 /* libslirp.h */,
-				28AD37A719A6135500ADF203 /* main.h */,
 				28AD37A819A6135500ADF203 /* mbuf.c */,
-				28AD37A919A6135500ADF203 /* mbuf.h */,
 				28AD37AA19A6135500ADF203 /* misc.c */,
-				28AD37AB19A6135500ADF203 /* misc.h */,
 				28AD37AC19A6135500ADF203 /* sbuf.c */,
-				28AD37AD19A6135500ADF203 /* sbuf.h */,
-				28AD37AE19A6135500ADF203 /* slirp_config.h */,
 				28AD37AF19A6135500ADF203 /* slirp.c */,
-				28AD37B019A6135500ADF203 /* slirp.h */,
 				28AD37B119A6135500ADF203 /* socket.c */,
-				28AD37B219A6135500ADF203 /* socket.h */,
 				28AD37B319A6135500ADF203 /* tcp_input.c */,
 				28AD37B419A6135500ADF203 /* tcp_output.c */,
 				28AD37B519A6135500ADF203 /* tcp_subr.c */,
 				28AD37B619A6135500ADF203 /* tcp_timer.c */,
+				28AD37BB19A6135500ADF203 /* tftp.c */,
+				28AD37BD19A6135500ADF203 /* udp.c */,
+				28AD379919A6135500ADF203 /* bootp.h */,
+				28AD379B19A6135500ADF203 /* ctl.h */,
+				28AD379D19A6135500ADF203 /* debug.h */,
+				28AD379E19A6135500ADF203 /* icmp_var.h */,
+				28AD37A019A6135500ADF203 /* if.h */,
+				28AD37A219A6135500ADF203 /* ip_icmp.h */,
+				28AD37A519A6135500ADF203 /* ip.h */,
+				28AD37A619A6135500ADF203 /* libslirp.h */,
+				28AD37A719A6135500ADF203 /* main.h */,
+				28AD37A919A6135500ADF203 /* mbuf.h */,
+				28AD37AB19A6135500ADF203 /* misc.h */,
+				28AD37AD19A6135500ADF203 /* sbuf.h */,
+				28AD37AE19A6135500ADF203 /* slirp_config.h */,
+				28AD37B019A6135500ADF203 /* slirp.h */,
+				28AD37B219A6135500ADF203 /* socket.h */,
 				28AD37B719A6135500ADF203 /* tcp_timer.h */,
 				28AD37B819A6135500ADF203 /* tcp_var.h */,
 				28AD37B919A6135500ADF203 /* tcp.h */,
 				28AD37BA19A6135500ADF203 /* tcpip.h */,
-				28AD37BB19A6135500ADF203 /* tftp.c */,
 				28AD37BC19A6135500ADF203 /* tftp.h */,
-				28AD37BD19A6135500ADF203 /* udp.c */,
 				28AD37BE19A6135500ADF203 /* udp.h */,
 			);
 			path = slirp;
@@ -762,6 +792,23 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
+		284E59082744341800E014B9 /* slirp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 284E590F2744341800E014B9 /* Build configuration list for PBXNativeTarget "slirp" */;
+			buildPhases = (
+				284E59052744341800E014B9 /* Sources */,
+				284E59062744341800E014B9 /* Frameworks */,
+				284E59072744341800E014B9 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = slirp;
+			productName = slirp;
+			productReference = 284E59092744341800E014B9 /* libslirp.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 		2898F44D18CB719600FE7806 /* BasiliskII */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2898F48318CB719700FE7806 /* Build configuration list for PBXNativeTarget "BasiliskII" */;
@@ -773,6 +820,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				284E59262744344F00E014B9 /* PBXTargetDependency */,
 				28B5C12018D24B14006583B9 /* PBXTargetDependency */,
 			);
 			name = BasiliskII;
@@ -808,6 +856,11 @@
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = namedfork;
 				TargetAttributes = {
+					284E59082744341800E014B9 = {
+						CreatedOnToolsVersion = 13.1;
+						DevelopmentTeam = UJXNDZ5TNU;
+						ProvisioningStyle = Automatic;
+					};
 					2898F44D18CB719600FE7806 = {
 						DevelopmentTeam = UJXNDZ5TNU;
 						SystemCapabilities = {
@@ -838,6 +891,7 @@
 				2898F44D18CB719600FE7806 /* BasiliskII */,
 				2898F47118CB719600FE7806 /* BasiliskIITests */,
 				28B5C11B18D24B04006583B9 /* uae_cpu */,
+				284E59082744341800E014B9 /* slirp */,
 			);
 		};
 /* End PBXProject section */
@@ -868,6 +922,31 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		284E59052744341800E014B9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				284E591E2744343C00E014B9 /* sbuf.c in Sources */,
+				284E59222744343C00E014B9 /* socket.c in Sources */,
+				284E591C2744343C00E014B9 /* tcp_input.c in Sources */,
+				284E59162744343C00E014B9 /* tftp.c in Sources */,
+				284E59212744343C00E014B9 /* misc.c in Sources */,
+				284E59122744343C00E014B9 /* ip_icmp.c in Sources */,
+				284E59172744343C00E014B9 /* tcp_output.c in Sources */,
+				284E59232744343C00E014B9 /* tcp_timer.c in Sources */,
+				284E591A2744343C00E014B9 /* mbuf.c in Sources */,
+				284E59182744343C00E014B9 /* if.c in Sources */,
+				284E591D2744343C00E014B9 /* slirp.c in Sources */,
+				284E59142744343C00E014B9 /* ip_output.c in Sources */,
+				284E591F2744343C00E014B9 /* cksum.c in Sources */,
+				284E59192744343C00E014B9 /* tcp_subr.c in Sources */,
+				284E59132744343C00E014B9 /* debug.c in Sources */,
+				284E59202744343C00E014B9 /* ip_input.c in Sources */,
+				284E591B2744343C00E014B9 /* bootp.c in Sources */,
+				284E59152744343C00E014B9 /* udp.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2898F44A18CB719600FE7806 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -875,37 +954,28 @@
 				288455D01CBAF7C7004EF2E6 /* KBKeyboardView.m in Sources */,
 				2898F46218CB719600FE7806 /* B2AppDelegate.mm in Sources */,
 				2898F56D18CB92DA00FE7806 /* sys_ios.cpp in Sources */,
-				28AD37C419A6135500ADF203 /* ip_input.c in Sources */,
 				287A15E11CAEF9B700D84E02 /* res.c in Sources */,
-				28AD37CA19A6135500ADF203 /* socket.c in Sources */,
-				28AD37C019A6135500ADF203 /* cksum.c in Sources */,
 				281509131CC5836A004ECA0A /* B2TrackPad.mm in Sources */,
 				2898F4A418CB72C100FE7806 /* rsrc_patches.cpp in Sources */,
 				28D555AE1C97739500059DDE /* B2FileChooser.m in Sources */,
-				28AD37D019A6135500ADF203 /* udp.c in Sources */,
 				2898F54118CB870E00FE7806 /* prefs_items.cpp in Sources */,
 				281A4CA31CAB2E0F00A380A7 /* B2FileChooserTableViewCell.m in Sources */,
-				28AD37C919A6135500ADF203 /* slirp.c in Sources */,
 				2898F46B18CB719600FE7806 /* B2ViewController.mm in Sources */,
 				2898F4A518CB72C100FE7806 /* scsi.cpp in Sources */,
 				2898F51A18CB76C000FE7806 /* basilisk_glue.cpp in Sources */,
 				28B5C12618D27536006583B9 /* audio_ios_impl.cpp in Sources */,
 				288C501D1B9CD0A000EA91F3 /* B2VolumeInfoViewController.m in Sources */,
-				28AD37C119A6135500ADF203 /* debug.c in Sources */,
 				2898F49C18CB72C100FE7806 /* audio.cpp in Sources */,
 				2898F53518CB76F100FE7806 /* fpu_uae.cpp in Sources */,
-				28AD37C819A6135500ADF203 /* sbuf.c in Sources */,
 				2898F55118CB879400FE7806 /* prefs_ios.mm in Sources */,
 				288455E11CBD6A87004EF2E6 /* B2DesktopDatabase.m in Sources */,
 				2850335F1B4B270A0061C869 /* B2VolumesSettingsViewController.m in Sources */,
-				28AD37CE19A6135500ADF203 /* tcp_timer.c in Sources */,
 				28FA0B771CC829A900481FE8 /* B2Application.mm in Sources */,
 				2898F55318CB879400FE7806 /* serial_ios.cpp in Sources */,
 				285033591B496B2B0061C869 /* B2SettingsViewController.m in Sources */,
 				2898F49D18CB72C100FE7806 /* cdrom.cpp in Sources */,
 				2898F45E18CB719600FE7806 /* main.m in Sources */,
 				2898F4A618CB72C100FE7806 /* serial.cpp in Sources */,
-				28AD37C319A6135500ADF203 /* ip_icmp.c in Sources */,
 				28B5C11818D2499D006583B9 /* readcpu.cpp in Sources */,
 				2898F4A018CB72C100FE7806 /* ether.cpp in Sources */,
 				2898F4A118CB72C100FE7806 /* extfs.cpp in Sources */,
@@ -915,8 +985,6 @@
 				2898F4A718CB72C100FE7806 /* slot_rom.cpp in Sources */,
 				2898F53E18CB866900FE7806 /* cpuemu.cpp in Sources */,
 				2898F4A318CB72C100FE7806 /* rom_patches.cpp in Sources */,
-				28AD37C519A6135500ADF203 /* ip_output.c in Sources */,
-				28AD37BF19A6135500ADF203 /* bootp.c in Sources */,
 				288455CE1CBAF7C7004EF2E6 /* KBKey.m in Sources */,
 				281A4C9D1CA965B000A380A7 /* B2DocumentsSettingsController.m in Sources */,
 				2898F55518CB879400FE7806 /* xpram_ios.mm in Sources */,
@@ -929,26 +997,19 @@
 				2898F4AA18CB72C100FE7806 /* video.cpp in Sources */,
 				2898F49E18CB72C100FE7806 /* disk.cpp in Sources */,
 				2898F53F18CB866900FE7806 /* cpustbl.cpp in Sources */,
-				28AD37C619A6135500ADF203 /* mbuf.c in Sources */,
-				28AD37CB19A6135500ADF203 /* tcp_input.c in Sources */,
-				28AD37C219A6135500ADF203 /* if.c in Sources */,
 				28D5559F1C8E3BF800059DDE /* B2GraphicsAndSoundSettingsViewController.m in Sources */,
 				2898F55418CB879400FE7806 /* user_strings_ios.cpp in Sources */,
 				288455DC1CBAFDAB004EF2E6 /* B2InputSettingsViewController.m in Sources */,
-				28AD37CF19A6135500ADF203 /* tftp.c in Sources */,
 				2822DA6918E6325500EE554D /* timer_unix.cpp in Sources */,
 				2898F55918CB89D900FE7806 /* main.cpp in Sources */,
-				28AD37C719A6135500ADF203 /* misc.c in Sources */,
 				2898F4AD18CB73E800FE7806 /* user_strings.cpp in Sources */,
 				28B5C11718D24999006583B9 /* newcpu.cpp in Sources */,
 				28AD37D619A678CE00ADF203 /* NSString+OSType.m in Sources */,
 				2898F57218CBDB6400FE7806 /* video_ios.mm in Sources */,
 				2898F58B18CCAFB300FE7806 /* audio_ios.cpp in Sources */,
 				281509101CC57F81004ECA0A /* B2TouchScreen.mm in Sources */,
-				28AD37CC19A6135500ADF203 /* tcp_output.c in Sources */,
 				2898F4AB18CB72C100FE7806 /* xpram.cpp in Sources */,
 				2898F54F18CB879400FE7806 /* ether_ios.cpp in Sources */,
-				28AD37CD19A6135500ADF203 /* tcp_subr.c in Sources */,
 				2898F57618CC82DD00FE7806 /* B2ScreenView.mm in Sources */,
 				2898F4A918CB72C100FE7806 /* timer.cpp in Sources */,
 				2898F51B18CB76C000FE7806 /* memory.cpp in Sources */,
@@ -973,6 +1034,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		284E59262744344F00E014B9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 284E59082744341800E014B9 /* slirp */;
+			targetProxy = 284E59252744344F00E014B9 /* PBXContainerItemProxy */;
+		};
 		2898F47818CB719700FE7806 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2898F44D18CB719600FE7806 /* BasiliskII */;
@@ -1013,6 +1079,67 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		284E59102744341800E014B9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = UJXNDZ5TNU;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../slirp";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DHAVE_RESOLV_H";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		284E59112744341800E014B9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = NO;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_MODULES_AUTOLINK = NO;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = UJXNDZ5TNU;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../slirp";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "-DHAVE_RESOLV_H";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		2898F48118CB719700FE7806 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1061,7 +1188,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = "armv7 armv7s arm64";
@@ -1110,7 +1237,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -1137,7 +1264,8 @@
 				);
 				INFOPLIST_FILE = "BasiliskII/BasiliskII-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.namedfork.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1165,7 +1293,8 @@
 				);
 				INFOPLIST_FILE = "BasiliskII/BasiliskII-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.namedfork.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
@@ -1253,6 +1382,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		284E590F2744341800E014B9 /* Build configuration list for PBXNativeTarget "slirp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				284E59102744341800E014B9 /* Debug */,
+				284E59112744341800E014B9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2898F44918CB719600FE7806 /* Build configuration list for PBXProject "BasiliskII" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
