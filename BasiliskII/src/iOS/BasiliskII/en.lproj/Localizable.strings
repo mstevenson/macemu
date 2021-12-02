@@ -33,6 +33,7 @@
 "settings.gfx.size.customize.message" = "Enter custom screen size in pixels";
 "settings.gfx.size.customize.width" = "width";
 "settings.gfx.size.customize.height" = "height";
+"settings.gfx.size.customize.help" = "%1$d×%2$d\nPinch to scale\nDouble tap for full screen";
 
 "settings.gfx.depth" = "Color Depth";
 "settings.gfx.depth.1" = "Black and White";

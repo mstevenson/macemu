@@ -19,6 +19,9 @@
     [super viewDidLoad];
     self.splitViewController.delegate = self;
     self.splitViewController.preferredDisplayMode = UISplitViewControllerDisplayModeAllVisible;
+    if (_selectedSetting != nil) {
+        [self openSetting:_selectedSetting];
+    }
 }
 
 - (UISplitViewController *)splitViewController {
@@ -27,6 +30,19 @@
 
 - (BOOL)splitViewController:(UISplitViewController *)splitViewController collapseSecondaryViewController:(UIViewController *)secondaryViewController ontoPrimaryViewController:(UIViewController *)primaryViewController {
     return YES;
+}
+
+- (void)setSelectedSetting:(NSString *)selectedSetting {
+    _selectedSetting = selectedSetting;
+    if (self.viewLoaded) {
+        [self openSetting:selectedSetting];
+    }
+}
+
+- (void)openSetting:(NSString*)setting {
+    UINavigationController *nc = self.splitViewController.viewControllers[0];
+    UITableViewController *settingsRoot = nc.viewControllers[0];
+    [settingsRoot performSegueWithIdentifier:setting sender:self];
 }
 
 @end

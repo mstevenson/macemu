@@ -14,9 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 @interface B2ViewController : UIViewController <KBKeyboardViewDelegate>
 
 @property (nonatomic, getter=isKeyboardVisible) BOOL keyboardVisible;
+@property (nonatomic, weak) IBOutlet UIView *helpView;
+@property (nonatomic, weak) IBOutlet UILabel *helpLabel;
 
++ (instancetype)sharedViewController;
 - (IBAction)showSettings:(id)sender;
 - (IBAction)unwindToMainScreen:(UIStoryboardSegue*)segue;
+- (void)startChoosingCustomSizeUI;
 
 @end
 

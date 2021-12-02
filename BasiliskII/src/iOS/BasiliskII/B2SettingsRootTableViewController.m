@@ -26,4 +26,19 @@
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
 }
 
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSArray<NSString*> *settingOrder = @[
+        @"volumes",
+        @"graphicsAndSound",
+        @"keyboardAndMouse",
+        @"networking",
+        @"memory",
+        @"documents"
+    ];
+    NSIndexPath *selectIndex = [NSIndexPath indexPathForRow:[settingOrder indexOfObject:segue.identifier] inSection:0];
+    if (![self.tableView.indexPathsForSelectedRows containsObject:selectIndex]) {
+        [self.tableView selectRowAtIndexPath:selectIndex animated:YES scrollPosition:UITableViewScrollPositionTop];
+    }
+}
+
 @end

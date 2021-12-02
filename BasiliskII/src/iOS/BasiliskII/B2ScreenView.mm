@@ -17,6 +17,8 @@ B2ScreenView *sharedScreenView = nil;
 {
     CGImageRef screenImage;
     CALayer *videoLayer;
+    UIGestureRecognizer *pinchGestureRecognizer;
+    CGSize initialSize;
 }
 
 - (void)awakeFromNib {
@@ -137,8 +139,11 @@ B2ScreenView *sharedScreenView = nil;
 
 - (void)updateImage:(CGImageRef)newImage {
     CGImageRef oldImage = screenImage;
-    screenImage = CGImageRetain(newImage);
     CGImageRelease(oldImage);
+    screenImage = newImage;
+    if (screenImage != nil) {
+        CGImageRetain(screenImage);
+    }
     [videoLayer performSelectorOnMainThread:@selector(setContents:) withObject:(__bridge id)screenImage waitUntilDone:NO];
 }
 

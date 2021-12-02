@@ -8,6 +8,7 @@
 
 #import "B2ScreenView.h"
 #import "B2GraphicsAndSoundSettingsViewController.h"
+#import "B2ViewController.h"
 
 typedef enum : NSInteger {
     B2GraphicsAndSoundSettingsSectionScreenSize,
@@ -168,8 +169,8 @@ typedef enum : NSInteger {
             CGSize size = [sharedScreenView.videoModes[indexPath.row] CGSizeValue];
             [defaults setValue:NSStringFromCGSize(size) forKey:@"videoSize"];
         } else {
-            // custom size (ask)
-            [self askForCustomSize];
+            // custom size (interactive)
+            [[B2ViewController sharedViewController] startChoosingCustomSizeUI];
         }
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionScreenDepth) {
         [defaults setInteger:[self depthValueAtIndex:indexPath.row] forKey:@"videoDepth"];
@@ -178,71 +179,6 @@ typedef enum : NSInteger {
     }
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     [tableView reloadSections:[NSIndexSet indexSetWithIndex:indexPath.section] withRowAnimation:UITableViewRowAnimationAutomatic];
-}
-
-#pragma mark - Custom Size
-
-- (void)askForCustomSize {
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:L(@"settings.gfx.size.customize.title") message:L(@"settings.gfx.size.customize.message") preferredStyle:UIAlertControllerStyleAlert];
-    CGSize customSize = sharedScreenView.hasCustomVideoMode ? sharedScreenView.videoModes.lastObject.CGSizeValue : CGSizeZero;
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = L(@"settings.gfx.size.customize.width");
-        textField.keyboardType = UIKeyboardTypeNumberPad;
-        textField.delegate = self;
-        if (customSize.width > 0) {
-            textField.text = @(customSize.width).stringValue;
-        }
-        [textField addTarget:self action:@selector(validateScreenSizeInput:) forControlEvents:UIControlEventAllEditingEvents];
-        self->screenSizeWidthField = textField;
-    }];
-    
-    [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.placeholder = L(@"settings.gfx.size.customize.height");
-        textField.keyboardType = UIKeyboardTypeNumberPad;
-        textField.delegate = self;
-        if (customSize.height > 0) {
-            textField.text = @(customSize.height).stringValue;
-        }
-        [textField addTarget:self action:@selector(validateScreenSizeInput:) forControlEvents:UIControlEventAllEditingEvents];
-        self->screenSizeHeightField = textField;
-    }];
-    
-    [alertController addAction:[UIAlertAction actionWithTitle:L(@"misc.cancel") style:UIAlertActionStyleCancel handler:nil]];
-    screenSizeSaveAction = [UIAlertAction actionWithTitle:L(@"misc.ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSInteger width = self->screenSizeWidthField.text.integerValue;
-        NSInteger height = self->screenSizeHeightField.text.integerValue;
-        CGSize newScreenSize = CGSizeMake(width, height);
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        [defaults setObject:NSStringFromCGSize(newScreenSize) forKey:@"videoSize"];
-        [sharedScreenView updateCustomSize:newScreenSize];
-        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:B2GraphicsAndSoundSettingsSectionScreenSize] withRowAnimation:UITableViewRowAnimationAutomatic];
-    }];
-    [alertController addAction:screenSizeSaveAction];
-    screenSizeSaveAction.enabled = NO;
-    [self presentViewController:alertController animated:YES completion:nil];
-
-}
-
-- (void)validateScreenSizeInput:(id)sender {
-    NSInteger width = screenSizeWidthField.text.integerValue;
-    NSInteger height = screenSizeHeightField.text.integerValue;
-    NSInteger pixels = width * height;
-    BOOL valid = width >= 240 && height >= 240 && pixels <= 3840 * 2160;
-    screenSizeSaveAction.enabled = valid;
-}
-
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
-    if (textField == screenSizeWidthField || textField == screenSizeHeightField) {
-        if (string.length == 0) {
-            return YES;
-        } else {
-            NSString *newString = [textField.text stringByReplacingCharactersInRange:range withString:string];
-            NSScanner *scanner = [NSScanner scannerWithString:newString];
-            NSInteger value;
-            return [scanner scanInteger:&value] && scanner.isAtEnd && value >= 0;
-        }
-    }
-    return YES;
 }
 
 @end

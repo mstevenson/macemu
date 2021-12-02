@@ -20,7 +20,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray<NSLayoutConstraint*> *fullScreenConstraints;
 @property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray<NSLayoutConstraint*> *marginConstraints;
 
-- (void)updateImage:(CGImageRef)newImage;
+- (void)updateImage:(nullable CGImageRef)newImage;
 - (void)updateCustomSize:(CGSize)customSize;
 
 @end

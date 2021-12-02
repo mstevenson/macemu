@@ -9,6 +9,7 @@
 #import "B2ViewController.h"
 #import "B2AppDelegate.h"
 #import "B2ScreenView.h"
+#import "B2SettingsViewController.h"
 #import "KBKeyboardView.h"
 #import "KBKeyboardLayout.h"
 #import "B2TouchScreen.h"
@@ -22,6 +23,8 @@
 @end
 #endif
 
+static B2ViewController *_sharedB2ViewController = nil;
+
 @implementation B2ViewController
 {
     KBKeyboardView *keyboardView;
@@ -30,11 +33,20 @@
     #ifdef __IPHONE_13_4
     UIPointerInteraction *pointerInteraction;
     #endif
+    
+    // interactive screen resizing
+    NSArray<UIGestureRecognizer*> *resizeGestures;
+    CGSize initialScreenSize;
+}
+
++ (instancetype)sharedViewController {
+    return _sharedB2ViewController;
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self installKeyboardGestures];
+    _sharedB2ViewController = self;
 }
 
 - (BOOL)prefersStatusBarHidden {
@@ -47,6 +59,14 @@
 
 - (void)unwindToMainScreen:(UIStoryboardSegue*)segue {
     [[B2AppDelegate sharedInstance] startEmulator];
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    if ([segue.destinationViewController isKindOfClass:[B2SettingsViewController class]] && [sender isKindOfClass:[NSString class]]) {
+        // open specific settings page
+        B2SettingsViewController *svc = (B2SettingsViewController*)segue.destinationViewController;
+        svc.selectedSetting = (NSString*)sender;
+    }
 }
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
@@ -121,6 +141,93 @@
     if (motion == UIEventSubtypeMotionShake) {
         [self showSettings:event];
     }
+}
+
+#pragma mark - Interactive Resizing
+
+- (void)startChoosingCustomSizeUI {
+    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
+    sharedScreenView.screenSize = sharedScreenView.videoModes.lastObject.CGSizeValue;
+    self.keyboardVisible = YES;
+    pointingDeviceView.userInteractionEnabled = NO;
+    // pinch to scale
+    UIPinchGestureRecognizer *pinchGestureRecognizer = [UIPinchGestureRecognizer new];
+    [pinchGestureRecognizer addTarget:self action:@selector(handleResizePinch:)];
+    // double-tap for full size
+    UITapGestureRecognizer *tapGestureRecognizer = [UITapGestureRecognizer new];
+    tapGestureRecognizer.numberOfTapsRequired = 2;
+    [tapGestureRecognizer addTarget:self action:@selector(handleResizeTap:)];
+    resizeGestures = @[pinchGestureRecognizer, tapGestureRecognizer];
+    for (UIGestureRecognizer *recognizer in resizeGestures) {
+        [sharedScreenView addGestureRecognizer:recognizer];
+    }
+    [self updateInteractiveScreenResize:sharedScreenView.screenSize];
+    _helpView.hidden = NO;
+}
+
+- (IBAction)endChoosingCustomSizeUI:(id)sender {
+    self.keyboardVisible = NO;
+    pointingDeviceView.userInteractionEnabled = YES;
+    for (UIGestureRecognizer *recognizer in resizeGestures) {
+        [sharedScreenView removeGestureRecognizer:recognizer];
+    }
+    resizeGestures = nil;
+    _helpView.hidden = YES;
+    
+    CGSize newScreenSize = sharedScreenView.screenSize;
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:NSStringFromCGSize(newScreenSize) forKey:@"videoSize"];
+    [sharedScreenView updateCustomSize:newScreenSize];
+    [sharedScreenView updateImage:nil];
+    [self showSettings:@"graphicsAndSound"];
+}
+
+- (void)handleResizePinch:(UIPinchGestureRecognizer*)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        initialScreenSize = sharedScreenView.screenSize;
+    }
+    if (recognizer.state == UIGestureRecognizerStateChanged && recognizer.numberOfTouches == 2) {
+        CGPoint firstPoint = [recognizer locationOfTouch:0 inView:recognizer.view];
+        CGPoint secondPoint = [recognizer locationOfTouch:1 inView:recognizer.view];
+        
+        double angle = atan2(abs(secondPoint.y - firstPoint.y), abs(secondPoint.x - firstPoint.x));
+        CGFloat hScale = recognizer.scale;
+        CGFloat vScale = recognizer.scale;
+        if (angle <= 0.3) {
+            // resize horizontally
+            vScale = 1.0;
+        } else if (angle >= 1.3) {
+            // resize vertically
+            hScale = 1.0;
+        }
+        [self updateInteractiveScreenResize:CGSizeMake(initialScreenSize.width * hScale, initialScreenSize.height * vScale)];
+    }
+}
+
+- (void)handleResizeTap:(UITapGestureRecognizer*)recognizer {
+    if (recognizer.state == UIGestureRecognizerStateEnded) {
+        CGSize fullSize = sharedScreenView.bounds.size;
+        if (self.keyboardVisible) {
+            fullSize.height -= keyboardView.bounds.size.height;
+        }
+        [self updateInteractiveScreenResize:fullSize];
+    }
+}
+
+- (void)updateInteractiveScreenResize:(CGSize)size {
+    uint32_t w = (uint32_t)size.width &~ 1;
+    uint32_t h = (uint32_t)size.height &~ 1;
+    if (w < 240 || h < 240 || w * h > 3840 * 2160) {
+        // invalid size
+        return;
+    }
+    size = CGSizeMake(w, h);
+    [sharedScreenView setScreenSize:size];
+    UIGraphicsBeginImageContext(size);
+    [[UIImage imageNamed:@"desktop"] drawInRect:CGRectMake(0, 0, size.width, size.height)];
+    [sharedScreenView updateImage:UIGraphicsGetImageFromCurrentImageContext().CGImage];
+    UIGraphicsPopContext();
+    _helpLabel.text = [NSString stringWithFormat:L(@"settings.gfx.size.customize.help"), (int)size.width, (int)size.height];
 }
 
 #pragma mark - Keyboard
