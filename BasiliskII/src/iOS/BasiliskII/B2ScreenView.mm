@@ -63,6 +63,24 @@ B2ScreenView *sharedScreenView = nil;
     NSValue *customSizeValue = [NSValue valueWithCGSize:customSize];
     if (!CGSizeEqualToSize(CGSizeZero, customSize) && ![videoModes containsObject:customSizeValue]) {
         [videoModes addObject:customSizeValue];
+        _hasCustomVideoMode = YES;
+    } else {
+        _hasCustomVideoMode = NO;
+    }
+    
+    _videoModes = [NSArray arrayWithArray:videoModes];
+}
+
+- (void)updateCustomSize:(CGSize)customSize {
+    NSMutableArray *videoModes = _videoModes.mutableCopy;
+    if (self.hasCustomVideoMode) {
+        [videoModes removeLastObject];
+        _hasCustomVideoMode = NO;
+    }
+    NSValue *customSizeValue = [NSValue valueWithCGSize:customSize];
+    if (!CGSizeEqualToSize(CGSizeZero, customSize) && ![videoModes containsObject:customSizeValue]) {
+        [videoModes addObject:customSizeValue];
+        _hasCustomVideoMode = YES;
     }
     
     _videoModes = [NSArray arrayWithArray:videoModes];

@@ -37,7 +37,7 @@ typedef enum : NSInteger {
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     switch (section) {
         case B2GraphicsAndSoundSettingsSectionScreenSize:
-            return sharedScreenView.videoModes.count + 1;
+            return sharedScreenView.videoModes.count + (sharedScreenView.hasCustomVideoMode ? 0 : 1);
         case B2GraphicsAndSoundSettingsSectionScreenDepth:
             return 6;
         case B2GraphicsAndSoundSettingsSectionFrameSkip:
@@ -72,7 +72,11 @@ typedef enum : NSInteger {
     
     if (indexPath.section == B2GraphicsAndSoundSettingsSectionScreenSize) {
         CGSize currentSize = CGSizeFromString([defaults stringForKey:@"videoSize"]);
-        if (indexPath.row < sharedScreenView.videoModes.count) {
+        NSUInteger nonCustomVideoModes = sharedScreenView.videoModes.count;
+        if (sharedScreenView.hasCustomVideoMode) {
+            nonCustomVideoModes--;
+        }
+        if (indexPath.row < nonCustomVideoModes) {
             CGSize size = [sharedScreenView.videoModes[indexPath.row] CGSizeValue];
             cellSelected = CGSizeEqualToSize(size, currentSize);
             NSString *sizeString = [self stringForScreenSize:size];
@@ -92,19 +96,21 @@ typedef enum : NSInteger {
                 cellIdentifier = @"detail";
             }
         } else {
-            cellSelected = ![sharedScreenView.videoModes containsObject:[NSValue valueWithCGSize:currentSize]];
+            // custom size
+            CGSize customSize = sharedScreenView.videoModes.lastObject.CGSizeValue;
+            cellSelected = sharedScreenView.hasCustomVideoMode && CGSizeEqualToSize(currentSize, customSize);
             cellText = L(@"settings.gfx.size.custom");
-            cellDetail = cellSelected ? [self stringForScreenSize:currentSize] : nil;
+            cellDetail = sharedScreenView.hasCustomVideoMode ? [self stringForScreenSize:customSize] : nil;
             cellIdentifier = @"detail";
         }
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionScreenDepth) {
-        int value = [self depthValueAtIndex:indexPath.row];
+        NSInteger value = [self depthValueAtIndex:indexPath.row];
         cellSelected = [defaults integerForKey:@"videoDepth"] == value;
-        cellText = L(@"settings.gfx.depth.%d", value);
+        cellText = L(@"settings.gfx.depth.%ld", (long)value);
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionFrameSkip) {
-        int value = [self frameSkipValueAtIndex:indexPath.row];
+        NSInteger value = [self frameSkipValueAtIndex:indexPath.row];
         cellSelected = [defaults integerForKey:@"frameskip"] == value;
-        cellText = L(@"settings.gfx.frameskip.%d", value);
+        cellText = L(@"settings.gfx.frameskip.%ld", (long)value);
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionSound) {
         cellSelected = ![defaults boolForKey:@"nosound"];
         cellText = L(@"settings.sound.enable");
@@ -153,7 +159,11 @@ typedef enum : NSInteger {
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (indexPath.section == B2GraphicsAndSoundSettingsSectionScreenSize) {
-        if (indexPath.row < sharedScreenView.videoModes.count) {
+        NSUInteger nonCustomVideoModes = sharedScreenView.videoModes.count;
+        if (sharedScreenView.hasCustomVideoMode) {
+            nonCustomVideoModes--;
+        }
+        if (indexPath.row < nonCustomVideoModes) {
             // selected size
             CGSize size = [sharedScreenView.videoModes[indexPath.row] CGSizeValue];
             [defaults setValue:NSStringFromCGSize(size) forKey:@"videoSize"];
@@ -174,29 +184,37 @@ typedef enum : NSInteger {
 
 - (void)askForCustomSize {
     UIAlertController *alertController = [UIAlertController alertControllerWithTitle:L(@"settings.gfx.size.customize.title") message:L(@"settings.gfx.size.customize.message") preferredStyle:UIAlertControllerStyleAlert];
+    CGSize customSize = sharedScreenView.hasCustomVideoMode ? sharedScreenView.videoModes.lastObject.CGSizeValue : CGSizeZero;
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = L(@"settings.gfx.size.customize.width");
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.delegate = self;
+        if (customSize.width > 0) {
+            textField.text = @(customSize.width).stringValue;
+        }
         [textField addTarget:self action:@selector(validateScreenSizeInput:) forControlEvents:UIControlEventAllEditingEvents];
-        screenSizeWidthField = textField;
+        self->screenSizeWidthField = textField;
     }];
     
     [alertController addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
         textField.placeholder = L(@"settings.gfx.size.customize.height");
         textField.keyboardType = UIKeyboardTypeNumberPad;
         textField.delegate = self;
+        if (customSize.height > 0) {
+            textField.text = @(customSize.height).stringValue;
+        }
         [textField addTarget:self action:@selector(validateScreenSizeInput:) forControlEvents:UIControlEventAllEditingEvents];
-        screenSizeHeightField = textField;
+        self->screenSizeHeightField = textField;
     }];
     
     [alertController addAction:[UIAlertAction actionWithTitle:L(@"misc.cancel") style:UIAlertActionStyleCancel handler:nil]];
     screenSizeSaveAction = [UIAlertAction actionWithTitle:L(@"misc.ok") style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSInteger width = screenSizeWidthField.text.integerValue;
-        NSInteger height = screenSizeHeightField.text.integerValue;
+        NSInteger width = self->screenSizeWidthField.text.integerValue;
+        NSInteger height = self->screenSizeHeightField.text.integerValue;
         CGSize newScreenSize = CGSizeMake(width, height);
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         [defaults setObject:NSStringFromCGSize(newScreenSize) forKey:@"videoSize"];
+        [sharedScreenView updateCustomSize:newScreenSize];
         [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:B2GraphicsAndSoundSettingsSectionScreenSize] withRowAnimation:UITableViewRowAnimationAutomatic];
     }];
     [alertController addAction:screenSizeSaveAction];

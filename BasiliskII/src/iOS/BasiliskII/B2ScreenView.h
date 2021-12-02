@@ -15,11 +15,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign) CGSize screenSize;
 @property (nonatomic, assign) CGRect screenBounds;
 @property (nonatomic, readonly) NSArray<NSValue*> *videoModes;
+@property (nonatomic, readonly) BOOL hasCustomVideoMode;
 @property (nonatomic, readonly) BOOL hasRetinaVideoMode;
 @property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray<NSLayoutConstraint*> *fullScreenConstraints;
 @property (nonatomic, strong) IBOutletCollection(NSLayoutConstraint) NSArray<NSLayoutConstraint*> *marginConstraints;
 
 - (void)updateImage:(CGImageRef)newImage;
+- (void)updateCustomSize:(CGSize)customSize;
 
 @end
 
