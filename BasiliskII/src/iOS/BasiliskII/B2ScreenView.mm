@@ -33,7 +33,7 @@ B2ScreenView *sharedScreenView = nil;
 }
 
 - (void)initVideoModes {
-    NSMutableArray *videoModes = [[NSMutableArray alloc] initWithCapacity:8];
+    NSMutableArray<NSValue*> *videoModes = [[NSMutableArray alloc] initWithCapacity:8];
     CGSize screenSize = [UIScreen mainScreen].bounds.size;
     if (screenSize.width < screenSize.height) {
         auto swp = screenSize.width;
@@ -46,45 +46,45 @@ B2ScreenView *sharedScreenView = nil;
     // current screen size
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults registerDefaults:@{@"videoDepth": @(8), @"videoSize": NSStringFromCGSize(screenSize)}];
-    [videoModes addObject:[NSValue valueWithCGSize:landscapeScreenSize]];
-    [videoModes addObject:[NSValue valueWithCGSize:portraitScreenSize]];
+    [self addVideoMode:landscapeScreenSize to:videoModes];
+    [self addVideoMode:portraitScreenSize to:videoModes];
     if ([self hasRetinaVideoMode]) {
-        [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(landscapeScreenSize.width * 2, landscapeScreenSize.height * 2)]];
-        [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(portraitScreenSize.width * 2, portraitScreenSize.height * 2)]];
+        [self addVideoMode:CGSizeMake(landscapeScreenSize.width * 2, landscapeScreenSize.height * 2) to:videoModes];
+        [self addVideoMode:CGSizeMake(portraitScreenSize.width * 2, portraitScreenSize.height * 2) to:videoModes];
     }
     
     // default resolutions
-    [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(512, 384)]];
-    [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(640, 480)]];
-    [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(800, 600)]];
-    [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(832, 624)]];
-    [videoModes addObject:[NSValue valueWithCGSize:CGSizeMake(1024, 768)]];
+    [self addVideoMode:CGSizeMake(512, 384) to:videoModes];
+    [self addVideoMode:CGSizeMake(640, 480) to:videoModes];
+    [self addVideoMode:CGSizeMake(800, 600) to:videoModes];
+    [self addVideoMode:CGSizeMake(832, 624) to:videoModes];
+    [self addVideoMode:CGSizeMake(1024, 768) to:videoModes];
     
     // custom size
     CGSize customSize = CGSizeFromString([defaults valueForKey:@"videoSize"]);
-    NSValue *customSizeValue = [NSValue valueWithCGSize:customSize];
-    if (!CGSizeEqualToSize(CGSizeZero, customSize) && ![videoModes containsObject:customSizeValue]) {
-        [videoModes addObject:customSizeValue];
-        _hasCustomVideoMode = YES;
-    } else {
-        _hasCustomVideoMode = NO;
-    }
-    
+    _hasCustomVideoMode = [self addVideoMode:customSize to:videoModes];
     _videoModes = [NSArray arrayWithArray:videoModes];
 }
 
+- (BOOL)addVideoMode:(CGSize)size to:(NSMutableArray<NSValue*>*)videoModes {
+    if (size.width <= 0 || size.height <= 0) {
+        return NO;
+    }
+    NSValue *value = [NSValue valueWithCGSize:size];
+    if (![videoModes containsObject:value]) {
+        [videoModes addObject:value];
+        return YES;
+    }
+    return NO;
+}
+
 - (void)updateCustomSize:(CGSize)customSize {
-    NSMutableArray *videoModes = _videoModes.mutableCopy;
+    NSMutableArray<NSValue*> *videoModes = _videoModes.mutableCopy;
     if (self.hasCustomVideoMode) {
         [videoModes removeLastObject];
         _hasCustomVideoMode = NO;
     }
-    NSValue *customSizeValue = [NSValue valueWithCGSize:customSize];
-    if (!CGSizeEqualToSize(CGSizeZero, customSize) && ![videoModes containsObject:customSizeValue]) {
-        [videoModes addObject:customSizeValue];
-        _hasCustomVideoMode = YES;
-    }
-    
+    _hasCustomVideoMode = [self addVideoMode:customSize to:videoModes];
     _videoModes = [NSArray arrayWithArray:videoModes];
 }
 
