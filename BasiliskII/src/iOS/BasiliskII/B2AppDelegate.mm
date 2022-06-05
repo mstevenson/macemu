@@ -151,6 +151,15 @@ bool GetTypeAndCreatorForFileName(const char *path, uint32_t *type, uint32_t *cr
     return YES;
 }
 
+- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL))completionHandler {
+    BOOL success = NO;
+    if ([shortcutItem.type isEqualToString:@"settings"] && self.window.rootViewController.presentedViewController == nil) {
+        [self.window.rootViewController performSelector:@selector(showSettings:) withObject:self afterDelay:0.0];
+        success = YES;
+    }
+    completionHandler(success);
+}
+
 - (BOOL)importFileToDocuments:(NSURL *)url copy:(BOOL)copy {
     if (url.fileURL) {
         // opening file

@@ -137,12 +137,6 @@ static B2ViewController *_sharedB2ViewController = nil;
     [self performSegueWithIdentifier:@"settings" sender:sender];
 }
 
-- (void)motionEnded:(UIEventSubtype)motion withEvent:(UIEvent *)event {
-    if (motion == UIEventSubtypeMotionShake) {
-        [self showSettings:event];
-    }
-}
-
 #pragma mark - Interactive Resizing
 
 - (void)startChoosingCustomSizeUI {
