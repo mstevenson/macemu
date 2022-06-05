@@ -305,6 +305,7 @@ static void Blit_Copy_Raw(uint8 * dest, const uint8 * source, uint32 length)
 /* --- 1-bit indexed to 8-bit color mode conversion                       --- */
 /* -------------------------------------------------------------------------- */
 
+#if !REAL_ADDRESSING && !DIRECT_ADDRESSING
 #define CONVERT_BW(byte) (byte)==1?0:255
 static void Blit_Expand_1_To_8_Color(uint8 * dest, const uint8 * p, uint32 length)
 {
@@ -321,6 +322,7 @@ static void Blit_Expand_1_To_8_Color(uint8 * dest, const uint8 * p, uint32 lengt
 		*q++ = CONVERT_BW(c & 1);
 	}
 }
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* --- 1/2/4-bit indexed to 8-bit mode conversion                         --- */
@@ -524,7 +526,6 @@ bool Screen_blitter_init(VisualFormat const & visual_format, bool native_byte_or
 
 		// Windowed 1-bit mode uses a 1-bit X image, so there's no need for special blitting routines
 		Screen_blit = Blit_Copy_Raw;
-
 	} else {
 
 		// Compute RGB shift values

@@ -28,6 +28,7 @@
 
 #ifdef USE_SDL
 # include <SDL.h>
+# include <SDL_main.h>
 #endif
 
 #ifndef USE_SDL_VIDEO
@@ -61,6 +62,9 @@ struct sigstate {
 # include <gdk/gdk.h>
 # ifdef HAVE_GNOMEUI
 #  include <gnome.h>
+# endif
+# if !defined(GDK_WINDOWING_QUARTZ) && !defined(GDK_WINDOWING_WAYLAND)
+#  include <X11/Xlib.h>
 # endif
 #endif
 
@@ -207,6 +211,8 @@ static void sigill_handler(int sig, int code, struct sigcontext *scp);
 extern "C" void EmulOpTrampoline(void);
 #endif
 
+// vde switch variable
+char* vde_sock;
 
 /*
  *  Ersatz functions
@@ -374,7 +380,8 @@ static void usage(const char *prg_name)
 		"  --display STRING\n    X display to use\n"
 		"  --break ADDRESS\n    set ROM breakpoint in hexadecimal\n"
 		"  --loadbreak FILE\n    load breakpoint from FILE\n"
-		"  --rominfo\n    dump ROM information\n", prg_name
+		"  --rominfo\n    dump ROM information\n"
+		"  --switch SWITCH_PATH\n    vde_switch address\n", prg_name
 	);
 	LoadPrefs(NULL); // read the prefs file so PrefsPrintUsage() will print the correct default values
 	PrefsPrintUsage();
@@ -383,6 +390,9 @@ static void usage(const char *prg_name)
 
 int main(int argc, char **argv)
 {
+#if defined(ENABLE_GTK) && !defined(GDK_WINDOWING_QUARTZ) && !defined(GDK_WINDOWING_WAYLAND)
+	XInitThreads();
+#endif
 	const char *vmdir = NULL;
 	char str[256];
 
@@ -436,7 +446,28 @@ int main(int argc, char **argv)
 		} else if (strcmp(argv[i], "--rominfo") == 0) {
 			argv[i] = NULL;
 			PrintROMInfo = true;
+		} else if (strcmp(argv[i], "--switch") == 0) {
+			argv[i] = NULL;
+			if (argv[++i] == NULL) {
+				printf("switch address not defined\n");
+				usage(argv[0]);
+			}
+			vde_sock = argv[i];
+			argv[i] = NULL;
 		}
+		
+#if __MACOSX__
+		// Mac OS X likes to pass in various options of its own, when launching an app.
+		// Attempt to ignore these.
+		if (argv[i]) {
+			const char * mac_psn_prefix = "-psn_";
+			if (strcmp(argv[i], "-NSDocumentRevisionsDebugMode") == 0) {
+				argv[i] = NULL;
+			} else if (strncmp(mac_psn_prefix, argv[i], strlen(mac_psn_prefix)) == 0) {
+				argv[i] = NULL;
+			}
+		}
+#endif
 	}
 
 	// Remove processed arguments
@@ -520,6 +551,18 @@ int main(int argc, char **argv)
 		QuitEmulator();
 	}
 	atexit(SDL_Quit);
+
+#if __MACOSX__ && SDL_VERSION_ATLEAST(2,0,0)
+	// On Mac OS X hosts, SDL2 will create its own menu bar.  This is mostly OK,
+	// except that it will also install keyboard shortcuts, such as Command + Q,
+	// which can interfere with keyboard shortcuts in the guest OS.
+	//
+	// HACK: disable these shortcuts, while leaving all other pieces of SDL2's
+	// menu bar in-place.
+	extern void disable_SDL2_macosx_menu_bar_keyboard_shortcuts();
+	disable_SDL2_macosx_menu_bar_keyboard_shortcuts();
+#endif
+	
 #endif
 
 	// Init system routines
@@ -629,9 +672,12 @@ int main(int argc, char **argv)
 	RAMBaseMac = Host2MacAddr(RAMBaseHost);
 	ROMBaseMac = Host2MacAddr(ROMBaseHost);
 #endif
-	D(bug("Mac RAM starts at %p (%08x)\n", RAMBaseHost, RAMBaseMac));
-	D(bug("Mac ROM starts at %p (%08x)\n", ROMBaseHost, ROMBaseMac));
-	
+
+#if __MACOSX__
+	extern void set_current_directory();
+	set_current_directory();
+#endif
+
 	// Get rom file path from preferences
 	const char *rom_path = PrefsFindString("rom");
 
@@ -688,6 +734,9 @@ int main(int argc, char **argv)
 	if (!InitAll(vmdir))
 		QuitEmulator();
 	D(bug("Initialization complete\n"));
+
+	D(bug("Mac RAM starts at %p (%08x)\n", RAMBaseHost, RAMBaseMac));
+	D(bug("Mac ROM starts at %p (%08x)\n", ROMBaseHost, ROMBaseMac));
 
 #if !EMULATED_68K
 	// (Virtual) supervisor mode, disable interrupts

@@ -36,6 +36,7 @@ AC_ARG_ENABLE(sdl-video,     [  --enable-sdl-video      use SDL for video graphi
 AC_ARG_ENABLE(sdl-audio,     [  --enable-sdl-audio      use SDL for audio [default=no]], [WANT_SDL_AUDIO=$enableval], [WANT_SDL_AUDIO=no])
 AC_ARG_ENABLE(sdl-framework,    [  --enable-sdl-framework  use SDL framework [default=no]], [WANT_SDL_FRAMEWORK=$enableval], [WANT_SDL_FRAMEWORK=no])
 AC_ARG_ENABLE(sdl-framework-prefix,    [  --enable-sdl-framework-prefix=PFX    default=/Library/Frameworks], [SDL_FRAMEWORK="$enableval"], [SDL_FRAMEWORK=/Library/Frameworks])
+AC_ARG_WITH(sdl2,            [  --with-sdl2             use SDL 2.x, rather than SDL 1.x [default=no]], [WANT_SDL_VERSION_MAJOR=2], [WANT_SDL_VERSION_MAJOR=1])
 
 dnl JIT compiler options.
 AC_ARG_ENABLE(jit-compiler,  [  --enable-jit-compiler   enable JIT compiler [default=no]], [WANT_JIT=$enableval], [WANT_JIT=no])
@@ -87,6 +88,11 @@ AC_ARG_WITH(bincue,
 
 AC_ARG_WITH(libvhd,   
   AS_HELP_STRING([--with-libvhd], [Enable VHD disk images]))
+
+AC_ARG_WITH(vdeplug,
+  AS_HELP_STRING([--with-vdeplug], [Enable VDE virtual network support]),
+  [],
+  [with_vdeplug=yes])
 
   
 dnl Cross Compiling results in 'guesses' being made about the target system. These defaults are oftetimes incorrect.
@@ -187,12 +193,14 @@ HAVE_M68K=no
 HAVE_SPARC=no
 HAVE_POWERPC=no
 HAVE_X86_64=no
+HAVE_AARCH_64=no
 case "$target_cpu" in
   i386* | i486* | i586* | i686* | i786* ) HAVE_I386=yes;;
   m68k* ) HAVE_M68K=yes;;
   sparc* ) HAVE_SPARC=yes;;
   powerpc* ) HAVE_POWERPC=yes;;
   x86_64* | amd64* ) HAVE_X86_64=yes;;
+  aarch64* ) HAVE_AARCH_64=yes;;
 esac
 
 dnl Check if we should really be assuming x86_64 even if we detected HAVE_I386 above.
@@ -250,7 +258,7 @@ AC_CHECK_LIB(rt, timer_create)
 AC_CHECK_LIB(rt, shm_open)
 AC_CHECK_LIB(m, cos)
 
-dnl AC_CHECK_SDLFRAMEWORK($1=NAME, $2=INCLUDES)
+dnl AC_CHECK_SDLFRAMEWORK($1=NAME, $2=INCLUDES, $3=ACTION_IF_SUCCESSFUL, $4=ACTION_IF_UNSUCCESSFUL)
 dnl AC_TRY_LINK uses main() but SDL needs main to take args,
 dnl therefore main is undefined with #undef.
 dnl Framework can be in an custom location.
@@ -260,18 +268,16 @@ AC_DEFUN([AC_CHECK_SDLFRAMEWORK], [
     ac_Framework, [
     saved_LIBS="$LIBS"
     LIBS="$LIBS -framework $1"
-    if [[ "x$SDL_FRAMEWORK" != "x/Library/Frameworks" ]]; then
-      if [[ "x$SDL_FRAMEWORK" != "x/System/Library/Frameworks" ]]; then
-        LIBS="$saved_LIBS -F$SDL_FRAMEWORK -framework $1"
-      fi
+    if [[ "x$SDL_FRAMEWORK" != "x/System/Library/Frameworks" ]]; then
+      LIBS="$saved_LIBS -F$SDL_FRAMEWORK -framework $1"
     fi
     saved_CPPFLAGS="$CPPFLAGS"
-    CPPFLAGS="$CPPFLAGS -I$SDL_FRAMEWORK/SDL.framework/Headers"
+    CPPFLAGS="$CPPFLAGS -I$SDL_FRAMEWORK/$1.framework/Headers"
     AC_TRY_LINK(
       [$2
 #undef main], [],
-      [AS_VAR_SET(ac_Framework, yes)], [AS_VAR_SET(ac_Framework, no);
-LIBS="$saved_LIBS"; CPPFLAGS="$saved_CPPFLAGS"]
+      [AS_VAR_SET(ac_Framework, yes); $3], [AS_VAR_SET(ac_Framework, no);
+LIBS="$saved_LIBS"; CPPFLAGS="$saved_CPPFLAGS"; $4]
     )
   ])
   AS_IF([test AS_VAR_GET(ac_Framework) = yes],
@@ -295,27 +301,66 @@ if [[ "x$WANT_SDL_AUDIO" = "xyes" ]]; then
 fi
 if [[ "x$WANT_SDL" = "xyes" ]]; then
   if [[ "x$WANT_SDL_FRAMEWORK" = "xyes" ]]; then
-    AC_CHECK_SDLFRAMEWORK(SDL, [#include <SDL.h>])
+    TEMP_WANT_SDL_VERSION_MAJOR=$WANT_SDL_VERSION_MAJOR
+    if [[ "x$TEMP_WANT_SDL_VERSION_MAJOR" = "x" ]]; then
+      TEMP_WANT_SDL_VERSION_MAJOR=2
+    fi
+    if [[ "x$TEMP_WANT_SDL_VERSION_MAJOR" = "x2" ]]; then
+      AC_CHECK_SDLFRAMEWORK(SDL2, [#include <SDL.h>], [
+        WANT_SDL_VERSION_MAJOR=2
+      ], [
+        TEMP_WANT_SDL_VERSION_MAJOR=1
+      ])
+    fi
+    if [[ "x$TEMP_WANT_SDL_VERSION_MAJOR" = "x1" ]]; then
+      AC_CHECK_SDLFRAMEWORK(SDL, [#include <SDL.h>], [
+        WANT_SDL_VERSION_MAJOR=1
+      ])
+    fi
   else
     ac_cv_framework_SDL=no
   fi
   if [[ "x$ac_cv_framework_SDL" = "xno" ]]; then
-    AC_PATH_PROG(sdl_config, "sdl-config")
-    if [[ -n "$sdl_config" ]]; then
-      sdl_cflags=`$sdl_config --cflags`
-      if [[ "x$WANT_SDL_STATIC" = "xyes" ]]; then
-        sdl_libs=`$sdl_config --static-libs`
+    if [[ "x$WANT_SDL_VERSION_MAJOR" = "x1" ]]; then
+      AC_DEFINE(ENABLE_SDL1, 1, [Define if using SDL1.])
+      AC_PATH_PROG(sdl_config, "sdl-config")
+      if [[ -n "$sdl_config" ]]; then
+        sdl_cflags=`$sdl_config --cflags`
+        if [[ "x$WANT_SDL_STATIC" = "xyes" ]]; then
+          sdl_libs=`$sdl_config --static-libs`
+        else
+          sdl_libs=`$sdl_config --libs`
+        fi
+        CFLAGS="$CFLAGS $sdl_cflags"
+        CXXFLAGS="$CXXFLAGS $sdl_cflags"
+        LIBS="$LIBS $sdl_libs"
       else
-        sdl_libs=`$sdl_config --libs`
+        WANT_SDL=no
+        WANT_SDL_VIDEO=no
+        WANT_SDL_AUDIO=no
+        SDL_SUPPORT="none"
       fi
-      CFLAGS="$CFLAGS $sdl_cflags"
-      CXXFLAGS="$CXXFLAGS $sdl_cflags"
-      LIBS="$LIBS $sdl_libs"
-    else
-      WANT_SDL=no
-      WANT_SDL_VIDEO=no
-      WANT_SDL_AUDIO=no
-      SDL_SUPPORT="none"
+    fi
+
+    if [[ "x$WANT_SDL_VERSION_MAJOR" = "x2" ]]; then
+      AC_DEFINE(ENABLE_SDL2, 1, [Define if using SDL2.])
+      AC_PATH_PROG(sdl_config, "sdl2-config")
+      if [[ -n "$sdl_config" ]]; then
+        sdl_cflags=`$sdl_config --cflags`
+        if [[ "x$WANT_SDL_STATIC" = "xyes" ]]; then
+          sdl_libs=`$sdl_config --static-libs`
+        else
+          sdl_libs=`$sdl_config --libs`
+        fi
+        CFLAGS="$CFLAGS $sdl_cflags"
+        CXXFLAGS="$CXXFLAGS $sdl_cflags"
+        LIBS="$LIBS $sdl_libs"
+      else
+        WANT_SDL=no
+        WANT_SDL_VIDEO=no
+        WANT_SDL_AUDIO=no
+        SDL_SUPPORT="none"
+      fi
     fi
   fi
   SDL_SUPPORT=`echo "$SDL_SUPPORT" | sed -e "s/^ //"`
@@ -440,10 +485,6 @@ if [[ "x$WANT_GTK" = "xgtk" ]]; then
   AM_PATH_GTK(1.2.0, [
     GUI_CFLAGS="$GTK_CFLAGS"
     GUI_LIBS="$GTK_LIBS"
-    dnl somehow, <gnome-i18n.h> would redefine gettext() to nothing if
-    dnl ENABLE_NLS is not set, thusly conflicting with C++ <string> which
-    dnl includes <libintl.h>
-    AM_GNU_GETTEXT
     B2_PATH_GNOMEUI([
       AC_DEFINE(HAVE_GNOMEUI, 1, [Define if libgnomeui is available.])
       GUI_CFLAGS="$GUI_CFLAGS $GNOMEUI_CFLAGS"
@@ -558,7 +599,8 @@ dnl Check for headers and functions related to pty support (sshpty.c)
 dnl From openssh-3.2.2p1 configure.ac
 
 AC_CHECK_HEADERS(strings.h login.h sys/bsdtty.h sys/stat.h util.h pty.h)
-AC_CHECK_FUNCS(_getpty vhangup strlcpy)
+AC_SEARCH_LIBS([openpty], [util bsd])
+AC_CHECK_FUNCS(_getpty openpty vhangup strlcpy)
 
 case "$host" in
 *-*-hpux10.26)
@@ -792,6 +834,13 @@ if [[ -n "$CAN_SLIRP" ]]; then
 fi
 AC_SUBST(SLIRP_SRCS)
 
+dnl Is libvdeplug available?
+have_vdeplug=no
+AS_IF([test "x$with_vdeplug" = "xyes"], [
+  have_vdeplug=yes
+  AC_CHECK_LIB(vdeplug, vde_close, [], [have_vdeplug=no])
+])
+
 if [[ "x$WANT_MACOSX_GUI" = "xyes" ]]; then
   CPPFLAGS="$CPPFLAGS -I../MacOSX"
   LIBS="$LIBS -framework CoreAudio -framework AudioUnit -framework AudioToolbox"
@@ -825,7 +874,7 @@ if [[ "x$WANT_SDL" = "xyes" ]]; then
 fi
 if [[ "x$WANT_SDL_VIDEO" = "xyes" ]]; then
   AC_DEFINE(USE_SDL_VIDEO, 1, [Define to enable SDL video graphics support])
-  VIDEOSRCS="../SDL/video_sdl.cpp"
+  VIDEOSRCS="../SDL/video_sdl.cpp ../SDL/video_sdl2.cpp"
   KEYCODES="../SDL/keycodes"
   if [[ "x$ac_cv_framework_Carbon" = "xyes" ]]; then
     AC_MSG_CHECKING([whether __LP64__ is defined])
@@ -851,6 +900,9 @@ if [[ "x$WANT_SDL_VIDEO" = "xyes" ]]; then
       EXTRASYSSRCS="$EXTRASYSSRCS ../dummy/clip_dummy.cpp"
       ;;
     esac
+    if [[ "$WANT_GTK" != "no" ]]; then
+      LIBS="$LIBS -lX11"
+    fi
   fi
 elif [[ "x$WANT_MACOSX_GUI" != "xyes" ]]; then
   VIDEOSRCS="video_x.cpp"
@@ -1375,6 +1427,16 @@ fi
 AC_TRANSLATE_DEFINE(HAVE_LINKER_SCRIPT, "$ac_cv_linker_script_works",
   [Define if there is a linker script to relocate the executable above 0x70000000.])
 
+dnl override the addressing mode test order for Darwin
+if [[ "x$OS_TYPE" = "xdarwin" ]]; then
+    ADDRESSING_TEST_ORDER="banks"
+fi
+
+dnl override the addressing mode test order for AARCH64
+if [[ "x$HAVE_AARCH_64" = "xyes" ]]; then
+    ADDRESSING_TEST_ORDER="banks"
+fi
+
 dnl Determine the addressing mode to use
 if [[ "x$WANT_NATIVE_M68K" = "xyes" ]]; then
   ADDRESSING_MODE="real"
@@ -1851,8 +1913,10 @@ echo
 echo Mac OS X GUI ........................... : $WANT_MACOSX_GUI
 echo Mac OS X Sound ......................... : $WANT_MACOSX_SOUND
 echo SDL support ............................ : $SDL_SUPPORT
+echo SDL major-version ...................... : $WANT_SDL_VERSION_MAJOR
 echo BINCUE support ......................... : $have_bincue
 echo LIBVHD support ......................... : $have_libvhd
+echo VDE support ............................ : $have_vdeplug
 echo XFree86 DGA support .................... : $WANT_XF86_DGA
 echo XFree86 VidMode support ................ : $WANT_XF86_VIDMODE
 echo fbdev DGA support ...................... : $WANT_FBDEV_DGA
