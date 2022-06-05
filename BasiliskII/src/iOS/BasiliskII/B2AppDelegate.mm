@@ -89,9 +89,6 @@ bool GetTypeAndCreatorForFileName(const char *path, uint32_t *type, uint32_t *cr
     // populate documents directory so it shows up in Files
     [[NSFileManager defaultManager] createDirectoryAtPath:self.userKeyboardLayoutsPath withIntermediateDirectories:YES attributes:nil error:nil];
 
-    // show preferences
-    [self.window.rootViewController performSelector:@selector(showSettings:) withObject:self afterDelay:0.0];
-    
     return YES;
 }
 
@@ -111,6 +108,11 @@ bool GetTypeAndCreatorForFileName(const char *path, uint32_t *type, uint32_t *cr
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    // Show settings if emulator is not running
+    if (self.emulatorRunning == NO && self.window.rootViewController.presentedViewController == nil) {
+        [self.window.rootViewController performSelector:@selector(showSettings:) withObject:self afterDelay:0.0];
+    }
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {
