@@ -12,6 +12,10 @@
 
 #define DEBUG 0
 
+// Mac Screen Width and Height
+uint32 MacScreenWidth;
+uint32 MacScreenHeight;
+
 static uint8 bits_from_depth(const video_depth depth)
 {
 	return 1 << depth;
@@ -117,6 +121,8 @@ bool IOS_monitor::video_open(const video_mode &mode)
     
     x = current_mode.x;
     y = current_mode.y;
+    MacScreenWidth = x;
+    MacScreenHeight = y;
     bpr = current_mode.bytes_per_row;
     
 	colorSpace = CGColorSpaceCreateDeviceRGB();
