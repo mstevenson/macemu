@@ -104,9 +104,10 @@ static int8_t usb_to_adb_scancode[] = {
 }
 
 - (void)handleKeyUIEvent:(UIEvent *)event {
-    [super handleKeyUIEvent:event];
-    if ([event isKindOfClass:keyboardEventClass]) {
+    if ([event isKindOfClass:keyboardEventClass] && [B2AppDelegate sharedInstance].emulatorRunning) {
         [self handleKeyboardEvent:(UIPhysicalKeyboardEvent*)event];
+    } else {
+        [super handleKeyUIEvent:event];
     }
 }
 
