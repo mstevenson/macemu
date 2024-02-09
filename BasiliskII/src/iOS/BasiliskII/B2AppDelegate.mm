@@ -69,6 +69,8 @@ bool GetTypeAndCreatorForFileName(const char *path, uint32_t *type, uint32_t *cr
     return false;
 }
 
+static B2AppDelegate *sharedDelegate = nil;
+
 @implementation B2AppDelegate
 {
     NSTimer *redrawTimer, *pramTimer;
@@ -79,10 +81,14 @@ bool GetTypeAndCreatorForFileName(const char *path, uint32_t *type, uint32_t *cr
 }
 
 + (instancetype)sharedInstance {
-    return (B2AppDelegate*)[UIApplication sharedApplication].delegate;
+    if (sharedDelegate == nil) {
+        return (B2AppDelegate*)[UIApplication sharedApplication].delegate;
+    }
+    return sharedDelegate;
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    sharedDelegate = self;
     [application setStatusBarHidden:YES];
     [self initEmulator];
     
