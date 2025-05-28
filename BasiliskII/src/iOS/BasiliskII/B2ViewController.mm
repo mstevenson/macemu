@@ -39,6 +39,16 @@ static B2ViewController *_sharedB2ViewController = nil;
     CGSize initialScreenSize;
 }
 
+
+- (BOOL)canPerformAction:(SEL)action withSender:(id)sender {
+    if (action == NSSelectorFromString(@"_performClose:")) {
+        // Blocks Command-W from closing all of Basilisk II
+        return true;
+    }
+    return [super canPerformAction:action withSender:sender];
+}
+
+
 + (instancetype)sharedViewController {
     return _sharedB2ViewController;
 }
