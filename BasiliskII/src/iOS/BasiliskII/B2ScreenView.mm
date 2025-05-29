@@ -25,7 +25,30 @@ B2ScreenView *sharedScreenView = nil;
     [super awakeFromNib];
     sharedScreenView = self;
     videoLayer = [CALayer layer];
+    NSString *screenFilter = [[NSUserDefaults standardUserDefaults] stringForKey:@"screenFilter"];
+    videoLayer.magnificationFilter = screenFilter;
+    videoLayer.minificationFilter = screenFilter;
     [self.layer addSublayer:videoLayer];
+    [[NSUserDefaults standardUserDefaults] addObserver:self forKeyPath:@"screenFilter" options:NSKeyValueObservingOptionNew|NSKeyValueObservingOptionOld context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([object isEqual:[NSUserDefaults standardUserDefaults]]) {
+        if ([keyPath isEqualToString:@"screenFilter"]) {
+            NSString *oldValue = change[NSKeyValueChangeOldKey];
+            NSString *value = change[NSKeyValueChangeNewKey];
+            videoLayer.magnificationFilter = value;
+            videoLayer.minificationFilter = value;
+            if ([value isEqualToString:kCAFilterNearest] || [oldValue isEqualToString:kCAFilterNearest]) {
+                [self setNeedsLayout];
+                [self layoutIfNeeded];
+            }
+        }
+    }
+}
+
+- (void)dealloc {
+    [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:@"screenFilter" context:NULL];
 }
 
 - (BOOL)hasRetinaVideoMode {
@@ -45,7 +68,7 @@ B2ScreenView *sharedScreenView = nil;
     
     // current screen size
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults registerDefaults:@{@"videoDepth": @(8), @"videoSize": NSStringFromCGSize(screenSize)}];
+    [defaults registerDefaults:@{@"screenSize": NSStringFromCGSize(screenSize)}];
     [self addVideoMode:landscapeScreenSize to:videoModes];
     [self addVideoMode:portraitScreenSize to:videoModes];
     if ([self hasRetinaVideoMode]) {
@@ -95,20 +118,35 @@ B2ScreenView *sharedScreenView = nil;
         [self initVideoModes];
     });
 
-    if (!CGSizeEqualToSize(_screenSize, CGSizeZero)) {
-        // Resize screen view after updating constraints
-        CGRect viewBounds = self.bounds;
-        CGSize screenSize = _screenSize;
-        CGFloat screenScale = MAX(screenSize.width / viewBounds.size.width, screenSize.height / viewBounds.size.height);
-        _screenBounds = CGRectMake(0, 0, screenSize.width / screenScale, screenSize.height / screenScale);
-        _screenBounds.origin.x = (viewBounds.size.width - _screenBounds.size.width)/2;
-        _screenBounds = CGRectIntegral(_screenBounds);
-        videoLayer.frame = _screenBounds;
-        BOOL scaleIsIntegral = (floor(screenScale) == screenScale);
-        NSString *filter = scaleIsIntegral ? kCAFilterNearest : kCAFilterLinear;
-        videoLayer.magnificationFilter = filter;
-        videoLayer.minificationFilter = filter;
+    if (CGSizeEqualToSize(_screenSize, CGSizeZero)) {
+        return;
     }
+
+    // Resize screen view after updating constraints
+    CGRect viewBounds = self.bounds;
+    CGSize screenSize = _screenSize;
+    CGFloat screenScale = MIN(viewBounds.size.width / screenSize.width, viewBounds.size.height / screenSize.height);
+    NSString *screenFilter = [[NSUserDefaults standardUserDefaults] stringForKey:@"screenFilter"];
+    if ([screenFilter isEqualToString:kCAFilterNearest] && screenScale > 1.0) {
+        screenScale = floor(screenScale);
+    } else if (screenScale > 1.0 && screenScale <= 1.1) {
+        screenScale = 1.0;
+    }
+
+    _screenBounds = CGRectMake(0, 0, screenSize.width * screenScale, screenSize.height * screenScale);
+    _screenBounds.origin.x = (viewBounds.size.width - _screenBounds.size.width)/2;
+    _screenBounds = CGRectIntegral(_screenBounds);
+
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad && (viewBounds.size.height - _screenBounds.size.height) >= 30.0) {
+        // move under multitasking indicator on iPad
+        _screenBounds.origin.y += 30;
+    }
+    videoLayer.frame = _screenBounds;
+    _screenBounds.origin.y += self.frame.origin.y;
+    BOOL scaleIsIntegral = (floor(screenScale) == screenScale);
+    if (scaleIsIntegral) screenFilter = kCAFilterNearest;
+    videoLayer.magnificationFilter = screenFilter;
+    videoLayer.minificationFilter = screenFilter;
 }
 
 - (void)setScreenSize:(CGSize)screenSize {

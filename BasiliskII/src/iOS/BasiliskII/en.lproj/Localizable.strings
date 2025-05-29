@@ -49,6 +49,10 @@
 "settings.gfx.frameskip.6" = "10 Hz";
 "settings.gfx.frameskip.8" = "7.5 Hz";
 "settings.gfx.frameskip.12" = "5 Hz";
+"settings.gfx.scaling" = "Display Scaling";
+"settings.gfx.scaling.1" = "Nearest Neighbour";
+"settings.gfx.scaling.2" = "Linear";
+"settings.gfx.scaling.3" = "Trilinear";
 
 "settings.sound" = "Sound";
 "settings.sound.enable" = "Enable Sound";

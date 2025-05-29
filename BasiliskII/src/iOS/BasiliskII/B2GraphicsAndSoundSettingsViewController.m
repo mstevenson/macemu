@@ -13,8 +13,9 @@
 typedef enum : NSInteger {
     B2GraphicsAndSoundSettingsSectionScreenSize,
     B2GraphicsAndSoundSettingsSectionScreenDepth,
+    B2GraphicsAndSoundSettingsSectionScalingFilter,
     B2GraphicsAndSoundSettingsSectionFrameSkip,
-    B2GraphicsAndSoundSettingsSectionSound
+    B2GraphicsAndSoundSettingsSectionSound,
 } B2GraphicsAndSoundSettingsSection;
 
 @interface B2GraphicsAndSoundSettingsViewController () <UITextFieldDelegate>
@@ -32,7 +33,7 @@ typedef enum : NSInteger {
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 4;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -41,6 +42,8 @@ typedef enum : NSInteger {
             return sharedScreenView.videoModes.count + (sharedScreenView.hasCustomVideoMode ? 0 : 1);
         case B2GraphicsAndSoundSettingsSectionScreenDepth:
             return 6;
+        case B2GraphicsAndSoundSettingsSectionScalingFilter:
+            return 3;
         case B2GraphicsAndSoundSettingsSectionFrameSkip:
             return 6;
         case B2GraphicsAndSoundSettingsSectionSound:
@@ -56,6 +59,8 @@ typedef enum : NSInteger {
             return L(@"settings.gfx.size");
         case B2GraphicsAndSoundSettingsSectionScreenDepth:
             return L(@"settings.gfx.depth");
+        case B2GraphicsAndSoundSettingsSectionScalingFilter:
+            return L(@"settings.gfx.scaling");
         case B2GraphicsAndSoundSettingsSectionFrameSkip:
             return L(@"settings.gfx.frameskip");
         case B2GraphicsAndSoundSettingsSectionSound:
@@ -108,6 +113,10 @@ typedef enum : NSInteger {
         NSInteger value = [self depthValueAtIndex:indexPath.row];
         cellSelected = [defaults integerForKey:@"videoDepth"] == value;
         cellText = L(@"settings.gfx.depth.%ld", (long)value);
+    } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionScalingFilter) {
+        NSString *value = [self scalingValueAtIndex:indexPath.row];
+        cellSelected = [defaults stringForKey:@"screenFilter"] == value;
+        cellText = L(@"settings.gfx.scaling.%ld", (long)indexPath.row+1);
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionFrameSkip) {
         NSInteger value = [self frameSkipValueAtIndex:indexPath.row];
         cellSelected = [defaults integerForKey:@"frameskip"] == value;
@@ -144,6 +153,11 @@ typedef enum : NSInteger {
     return values[index];
 }
 
+- (NSString*)scalingValueAtIndex:(NSInteger)index {
+    NSArray<NSString*> *values = @[kCAFilterNearest, kCAFilterLinear, kCAFilterTrilinear];
+    return values[index];
+}
+
 - (NSInteger)frameSkipValueAtIndex:(NSInteger)index {
     NSInteger values[] = {1,2,4,6,8,12};
     return values[index];
@@ -172,6 +186,8 @@ typedef enum : NSInteger {
             // custom size (interactive)
             [[B2ViewController sharedViewController] startChoosingCustomSizeUI];
         }
+    } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionScalingFilter) {
+        [defaults setValue:[self scalingValueAtIndex:indexPath.row] forKey:@"screenFilter"];
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionScreenDepth) {
         [defaults setInteger:[self depthValueAtIndex:indexPath.row] forKey:@"videoDepth"];
     } else if (indexPath.section == B2GraphicsAndSoundSettingsSectionFrameSkip) {

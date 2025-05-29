@@ -50,7 +50,9 @@ void PrefsInit(const char *vmdir, int &argc, char **&argv)
                                                  @"rom": @"ROM",
                                                  @"frameskip": @2,
                                                  @"trackpad": @([UIDevice currentDevice].userInterfaceIdiom != UIUserInterfaceIdiomPad),
-                                                 @"keyboardLayout": layoutForLanguage[firstLanguage]
+                                                 @"keyboardLayout": layoutForLanguage[firstLanguage],
+                                                 @"videoDepth": @(8),
+                                                 @"screenFilter": kCAFilterLinear,
                                                  }];
         [defaults registerDefaults:defaultPrefs];
         defaultPrefs = nil;
