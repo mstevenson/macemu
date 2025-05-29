@@ -3,10 +3,10 @@
 //  BasiliskII
 //
 //  Created by Jesús A. Álvarez on 09/04/2016.
-//  Copyright © 2016 namedfork. All rights reserved.
+//  Copyright © 2016-2025 namedfork. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 #define VKC_SHIFT_CAPS -127
 #define VKC_HIDE -128
