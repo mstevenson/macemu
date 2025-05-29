@@ -197,7 +197,7 @@ NSString* NSStringFromB2VolumeType(B2VolumeType volumeType) {
 }
 
 - (void)createDiskImageWithName:(NSString*)name size:(off_t)size {
-    NSString *imageFileName = [name.pathExtension isEqualToString:@"img"] ? name : [name stringByAppendingPathExtension:@"img"];
+    NSString *imageFileName = [name.pathExtension.lowercaseString isEqualToString:@"img"] ? name : [name stringByAppendingPathExtension:@"img"];
     NSString *imagePath = [[B2AppDelegate sharedInstance].documentsPath stringByAppendingPathComponent:imageFileName];
     
     int fd = open(imagePath.fileSystemRepresentation, O_CREAT | O_TRUNC | O_EXCL | O_WRONLY, 0666);

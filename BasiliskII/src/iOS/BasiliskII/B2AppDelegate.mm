@@ -286,7 +286,7 @@ static B2AppDelegate *sharedDelegate = nil;
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *diskImageExtensions = @[@"img", @"dsk", @"dc42", @"diskcopy42", @"iso", @"cdr", @"toast"];
     NSPredicate *diskImagePredicate = [NSPredicate predicateWithBlock:^BOOL(NSString *filename, NSDictionary<NSString *,id> * _Nullable bindings) {
-        return [diskImageExtensions containsObject:filename.pathExtension];
+        return [diskImageExtensions containsObject:filename.pathExtension.lowercaseString];
     }];
     return [[fm contentsOfDirectoryAtPath:self.documentsPath error:nil] filteredArrayUsingPredicate:diskImagePredicate];
 }
