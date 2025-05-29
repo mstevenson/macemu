@@ -63,6 +63,10 @@ static B2ViewController *_sharedB2ViewController = nil;
     return YES;
 }
 
+- (BOOL)prefersHomeIndicatorAutoHidden {
+    return YES;
+}
+
 - (UIRectEdge)preferredScreenEdgesDeferringSystemGestures {
     return UIRectEdgeAll;
 }

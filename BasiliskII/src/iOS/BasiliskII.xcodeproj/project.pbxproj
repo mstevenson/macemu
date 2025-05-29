@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2814CEF82DE876CF005024E7 /* DefaultSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2814CEF72DE876CF005024E7 /* DefaultSceneDelegate.swift */; };
 		281509101CC57F81004ECA0A /* B2TouchScreen.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2815090F1CC57F81004ECA0A /* B2TouchScreen.mm */; };
 		281509131CC5836A004ECA0A /* B2TrackPad.mm in Sources */ = {isa = PBXBuildFile; fileRef = 281509121CC5836A004ECA0A /* B2TrackPad.mm */; };
 		281A4C9D1CA965B000A380A7 /* B2DocumentsSettingsController.m in Sources */ = {isa = PBXBuildFile; fileRef = 281A4C9C1CA965B000A380A7 /* B2DocumentsSettingsController.m */; };
@@ -153,6 +154,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2814CEF72DE876CF005024E7 /* DefaultSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultSceneDelegate.swift; sourceTree = "<group>"; };
+		2814CEF92DE876D2005024E7 /* BasiliskII-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BasiliskII-Bridging-Header.h"; sourceTree = "<group>"; };
 		2815090E1CC57F81004ECA0A /* B2TouchScreen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2TouchScreen.h; sourceTree = "<group>"; };
 		2815090F1CC57F81004ECA0A /* B2TouchScreen.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = B2TouchScreen.mm; sourceTree = "<group>"; };
 		281509111CC5836A004ECA0A /* B2TrackPad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = B2TrackPad.h; sourceTree = "<group>"; };
@@ -445,6 +448,7 @@
 		28621F1D19ABADC2009615FC /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				2814CEF72DE876CF005024E7 /* DefaultSceneDelegate.swift */,
 				282A8E8D1A500A79008F8F71 /* Main.storyboard */,
 				2898F46918CB719600FE7806 /* B2ViewController.h */,
 				2898F46A18CB719600FE7806 /* B2ViewController.mm */,
@@ -459,6 +463,7 @@
 				285033561B496AF00061C869 /* Settings */,
 				28CC0DED1A500A380040A788 /* Launch Screen.xib */,
 				288C50181B9CADF900EA91F3 /* Localizable.strings */,
+				2814CEF92DE876D2005024E7 /* BasiliskII-Bridging-Header.h */,
 			);
 			name = UI;
 			sourceTree = "<group>";
@@ -863,6 +868,7 @@
 					};
 					2898F44D18CB719600FE7806 = {
 						DevelopmentTeam = UJXNDZ5TNU;
+						LastSwiftMigration = 1630;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 0;
@@ -988,6 +994,7 @@
 				288455CE1CBAF7C7004EF2E6 /* KBKey.m in Sources */,
 				281A4C9D1CA965B000A380A7 /* B2DocumentsSettingsController.m in Sources */,
 				2898F55518CB879400FE7806 /* xpram_ios.mm in Sources */,
+				2814CEF82DE876CF005024E7 /* DefaultSceneDelegate.swift in Sources */,
 				288C50171B9C6E8B00EA91F3 /* vm_alloc.cpp in Sources */,
 				288455CF1CBAF7C7004EF2E6 /* KBKeyboardLayout.m in Sources */,
 				2898F49B18CB72C100FE7806 /* adb.cpp in Sources */,
@@ -1249,8 +1256,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = UJXNDZ5TNU;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BasiliskII/BasiliskII-Prefix.pch";
 				GCC_STRICT_ALIASING = NO;
@@ -1263,12 +1272,15 @@
 					"$(SRCROOT)/../slirp",
 				);
 				INFOPLIST_FILE = "BasiliskII/BasiliskII-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.namedfork.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "BasiliskII/BasiliskII-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1278,8 +1290,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEVELOPMENT_TEAM = UJXNDZ5TNU;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "BasiliskII/BasiliskII-Prefix.pch";
 				GCC_STRICT_ALIASING = NO;
@@ -1292,12 +1306,14 @@
 					"$(SRCROOT)/../slirp",
 				);
 				INFOPLIST_FILE = "BasiliskII/BasiliskII-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "net.namedfork.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "BasiliskII/BasiliskII-Bridging-Header.h";
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

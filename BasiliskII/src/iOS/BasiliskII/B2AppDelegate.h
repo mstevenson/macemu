@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface B2AppDelegate : UIResponder <UIApplicationDelegate, B2DesktopDelegate>
 
+@property (class, readonly, strong) B2AppDelegate *sharedInstance NS_SWIFT_NAME(shared);
 @property (strong, nonatomic) UIWindow *window;
 @property (readonly, nonatomic) NSString *documentsPath;
 @property (readonly, nonatomic) NSString *userKeyboardLayoutsPath;
@@ -21,7 +22,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (readonly, nonatomic) NSArray<NSString *> *availableDiskImages;
 @property (readonly, nonatomic) NSArray<NSString *> *availableKeyboardLayouts;
 
-+ (instancetype)sharedInstance;
 - (void)startEmulator;
 - (void)showAlertWithTitle:(NSString *)title message:(NSString *)message;
 
