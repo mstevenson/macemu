@@ -338,6 +338,38 @@ void SysAddDiskPrefs(void)
 		fclose(f);
 	}
 #endif
+
+	// Search current directory for disk image files
+	DIR *dir = opendir(".");
+	if (dir != NULL) {
+		struct dirent *entry;
+		while ((entry = readdir(dir)) != NULL) {
+			if (entry->d_type == DT_REG || entry->d_type == DT_UNKNOWN) {
+				const char *name = entry->d_name;
+				size_t len = strlen(name);
+				
+				// Check for disk image extensions (case insensitive)
+				bool is_disk_image = false;
+				if (len > 4) {
+					const char *ext = name + len - 4;
+					if (strcasecmp(ext, ".hfv") == 0 ||
+					    strcasecmp(ext, ".dsk") == 0 ||
+					    strcasecmp(ext, ".img") == 0) {
+						is_disk_image = true;
+					}
+				}
+				if (!is_disk_image && len > 6 && strcasecmp(name + len - 6, ".toast") == 0) {
+					is_disk_image = true;
+				}
+				
+				// Verify file exists and is readable before adding
+				if (is_disk_image && access(name, R_OK) == 0) {
+					PrefsAddString("disk", name);
+				}
+			}
+		}
+		closedir(dir);
+	}
 }
 
 

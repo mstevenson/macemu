@@ -238,6 +238,40 @@ void SysAddFloppyPrefs(void)
 
 void SysAddDiskPrefs(void)
 {
+	// Search current directory for disk image files by extension
+	WIN32_FIND_DATA findData;
+	HANDLE hFind;
+	
+	// Search patterns for different disk image types
+	const char* patterns[] = {"*.hfv", "*.dsk", "*.img", "*.toast", NULL};
+	
+	for (int i = 0; patterns[i] != NULL; i++) {
+		hFind = FindFirstFile(patterns[i], &findData);
+		
+		if (hFind != INVALID_HANDLE_VALUE) {
+			do {
+				// Skip directories and system/hidden files
+				if (!(findData.dwFileAttributes & (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_HIDDEN))) {
+					// Verify file is readable by trying to open it
+					HANDLE fileHandle = CreateFile(
+						findData.cFileName,
+						GENERIC_READ,
+						FILE_SHARE_READ,
+						NULL,
+						OPEN_EXISTING,
+						FILE_ATTRIBUTE_NORMAL,
+						NULL
+					);
+					if (fileHandle != INVALID_HANDLE_VALUE) {
+						CloseHandle(fileHandle);
+						PrefsAddString("disk", findData.cFileName);
+					}
+				}
+			} while (FindNextFile(hFind, &findData));
+			
+			FindClose(hFind);
+		}
+	}
 }
 
 
