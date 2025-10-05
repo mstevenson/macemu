@@ -32,6 +32,35 @@
 
 #if SDL_VERSION_ATLEAST(2, 0, 0)
 
+static id eventMonitor = nil;
+static void (*g_toggle_fullscreen_callback)(void) = NULL;
+
+void install_macosx_hotkey_handler(void (*toggle_fullscreen_callback)(void)) {
+	g_toggle_fullscreen_callback = toggle_fullscreen_callback;
+
+	// Install a local event monitor to catch Fn+F
+	// The Fn key on macOS sends function key codes (F1-F12) but Fn+F sends kVK_ANSI_F
+	// with NSEventModifierFlagFunction set
+	eventMonitor = [NSEvent addLocalMonitorForEventsMatchingMask:NSEventMaskKeyDown handler:^NSEvent*(NSEvent* event) {
+		if ((event.modifierFlags & NSEventModifierFlagFunction) &&
+		    event.keyCode == 0x03) {
+			if (g_toggle_fullscreen_callback) {
+				g_toggle_fullscreen_callback();
+			}
+			return nil;
+		}
+		return event;
+	}];
+}
+
+void remove_macosx_hotkey_handler() {
+	if (eventMonitor) {
+		[NSEvent removeMonitor:eventMonitor];
+		eventMonitor = nil;
+	}
+	g_toggle_fullscreen_callback = NULL;
+}
+
 void disable_SDL2_macosx_menu_bar_keyboard_shortcuts() {
 	for (NSMenuItem * menu_item in [NSApp mainMenu].itemArray) {
 		if (menu_item.hasSubmenu) {

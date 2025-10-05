@@ -25,6 +25,8 @@
 #if SDL_VERSION_ATLEAST(2,0,0)
 void disable_SDL2_macosx_menu_bar_keyboard_shortcuts();
 bool is_fullscreen_osx(SDL_Window * window);
+void install_macosx_hotkey_handler(void (*toggle_fullscreen_callback)(void));
+void remove_macosx_hotkey_handler();
 #endif
 #endif
 

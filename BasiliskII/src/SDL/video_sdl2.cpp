@@ -25,6 +25,7 @@
  *      Ctrl-Esc = emergency quit
  *      Ctrl-F1 = mount floppy
  *      Ctrl-F5 = grab mouse (in windowed mode)
+ *      Ctrl-Return = toggle fullscreen/windowed mode
  *
  *  FIXMEs and TODOs:
  *  - Windows requires an extra mouse event to update the actual cursor image?
@@ -201,6 +202,13 @@ static bool is_fullscreen(SDL_Window *);
 
 // From sys_unix.cpp
 extern void SysMountFirstFloppy(void);
+
+#ifdef __MACOSX__
+// Callback for macOS-native Fn+F hotkey
+static void macosx_toggle_fullscreen_callback(void) {
+	toggle_fullscreen = true;
+}
+#endif
 
 
 /*
@@ -783,6 +791,10 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 	if (!did_add_event_watch) {
 		SDL_AddEventWatch(&on_sdl_event_generated, NULL);
 		did_add_event_watch = true;
+#ifdef __MACOSX__
+		// Install macOS-native event handler for Fn+F hotkey
+		install_macosx_hotkey_handler(macosx_toggle_fullscreen_callback);
+#endif
 	}
 
 	if (!sdl_renderer) {
@@ -1644,6 +1656,11 @@ void SDL_monitor_desc::video_close(void)
 
 void VideoExit(void)
 {
+#ifdef __MACOSX__
+	// Remove macOS-native event handler
+	remove_macosx_hotkey_handler();
+#endif
+
 	// Close displays
 	vector<monitor_desc *>::iterator i, end = VideoMonitors.end();
 	for (i = VideoMonitors.begin(); i != end; ++i)
