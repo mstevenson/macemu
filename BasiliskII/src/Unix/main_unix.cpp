@@ -153,6 +153,7 @@ X11_LOCK_TYPE x_display_lock = X11_LOCK_INIT;		// X11 display lock
 #endif
 
 static uint8 last_xpram[XPRAM_SIZE];				// Buffer for monitoring XPRAM changes
+static volatile bool mac_os_booted = false;		// Flag: Mac OS has finished booting
 
 #ifdef HAVE_PTHREADS
 #if !EMULATED_68K
@@ -1062,6 +1063,27 @@ void QuitEmulator(void)
 
 
 /*
+ *  Mac OS has finished booting notification
+ */
+
+void MacOSBootedNotification(void)
+{
+	mac_os_booted = true;
+	D(bug("Mac OS has finished booting\n"));
+}
+
+
+/*
+ *  Check if Mac OS has finished booting
+ */
+
+bool HasMacOSBooted(void)
+{
+	return mac_os_booted;
+}
+
+
+/*
  *  Code was patched, flush caches if neccessary (i.e. when using a real 680x0
  *  or a dynamically recompiling emulator)
  */
@@ -1098,6 +1120,8 @@ static void sigint_handler(...)
 	extern void m68k_dumpstate(uaecptr *nextpc);
 	m68k_dumpstate(&nextpc);
 #endif
+	// Stop CPU execution - Start680x0() will return and then QuitEmulator() will be called
+	Quit680x0();
 #endif
 	VideoQuitFullScreen();
 	const char *arg[4] = {"mon", "-m", "-r", NULL};

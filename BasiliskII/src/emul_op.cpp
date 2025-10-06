@@ -282,9 +282,18 @@ void EmulOp(uint16 opcode, M68kRegisters *r)
 			r->d[0] = SonyPrime(r->a[0], r->a[1]);
 			break;
 
-		case M68K_EMUL_OP_SONY_CONTROL:
+		case M68K_EMUL_OP_SONY_CONTROL: {
+			uint16 code = ReadMacInt16(r->a[0] + csCode);
+			if (code == 65) {	// accRun - called after Mac OS startup
+				static bool first_accrun = true;
+				if (first_accrun) {
+					first_accrun = false;
+					MacOSBootedNotification();
+				}
+			}
 			r->d[0] = SonyControl(r->a[0], r->a[1]);
 			break;
+		}
 
 		case M68K_EMUL_OP_SONY_STATUS:
 			r->d[0] = SonyStatus(r->a[0], r->a[1]);

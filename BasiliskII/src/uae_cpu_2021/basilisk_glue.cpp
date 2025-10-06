@@ -153,6 +153,16 @@ void Start680x0(void)
 
 
 /*
+ *  Stop 680x0 emulation
+ */
+
+void Quit680x0(void)
+{
+	m68k_emulop_return();
+}
+
+
+/*
  *  Trigger interrupt
  */
 

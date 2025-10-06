@@ -215,9 +215,9 @@ extern void AtariReset(void);
 // 680x0 emulation functions
 struct M68kRegisters;
 extern void Start680x0(void);	// Reset and start 680x0
+extern void Quit680x0(void);	// Quit 680x0
 #if 0
 extern void Restart680x0(void);	// Restart running 680x0
-extern void Quit680x0(void);	// Quit 680x0
 #endif
 
 extern "C" void Execute68k(uint32 addr, M68kRegisters *r);		// Execute 68k code from EMUL_OP routine

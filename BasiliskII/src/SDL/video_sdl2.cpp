@@ -2458,8 +2458,12 @@ static void handle_events(void)
 			// Window "close" widget clicked
 			case SDL_QUIT:
 				if (SDL_GetModState() & (KMOD_LALT | KMOD_RALT)) break;
-				ADBKeyDown(0x7f);	// Power key
-				ADBKeyUp(0x7f);
+				if (HasMacOSBooted()) {
+					ADBKeyDown(0x7f);	// Power key
+					ADBKeyUp(0x7f);
+				} else {
+					QuitEmulator();
+				}
 				break;
 			}
 		}

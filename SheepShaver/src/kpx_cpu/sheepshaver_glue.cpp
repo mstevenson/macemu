@@ -954,6 +954,16 @@ void TriggerInterrupt(void)
 #endif
 }
 
+/*
+ *  Stop PowerPC emulation
+ */
+
+void QuitPowerPC(void)
+{
+	if (ppc_cpu)
+		ppc_cpu->quit();
+}
+
 void HandleInterrupt(powerpc_registers *r)
 {
 #ifdef USE_SDL_VIDEO

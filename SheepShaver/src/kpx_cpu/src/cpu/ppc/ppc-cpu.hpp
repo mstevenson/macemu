@@ -288,7 +288,10 @@ public:
 
 	// Interrupts handling
 	void trigger_interrupt();
-	
+
+	// Stop CPU emulation
+	void quit();
+
 	// Set VALUE to register ID
 	void set_register(int id, any_register const & value);
 
@@ -509,6 +512,11 @@ inline void powerpc_cpu::trigger_interrupt()
 #if PPC_CHECK_INTERRUPTS
 	spcflags().set(SPCFLAG_CPU_TRIGGER_INTERRUPT);
 #endif
+}
+
+inline void powerpc_cpu::quit()
+{
+	spcflags().set(SPCFLAG_CPU_EXEC_RETURN);
 }
 
 #ifdef SHEEPSHAVER

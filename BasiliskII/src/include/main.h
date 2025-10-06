@@ -52,6 +52,8 @@ extern void ExitAll(void);
 // Platform-specific functions
 extern void FlushCodeCache(void *start, uint32 size);	// Code was patched, flush caches if neccessary
 extern void QuitEmulator(void);							// Quit emulator
+extern void MacOSBootedNotification(void);				// Called when Mac OS has finished booting
+extern bool HasMacOSBooted(void);						// Check if Mac OS has finished booting
 extern void ErrorAlert(const char *text);				// Display error alert
 extern void ErrorAlert(int string_id);
 extern void WarningAlert(const char *text);				// Display warning alert

@@ -114,6 +114,8 @@ uintptr SheepMem::data;						// Top of SheepShaver data (stack like storage)
 
 static HHOOK keyboard_hook;					// Hook for intercepting windows key events
 
+static volatile bool mac_os_booted = false;		// Flag: Mac OS has finished booting
+
 
 // Prototypes
 static bool kernel_data_init(void);
@@ -587,7 +589,8 @@ void jump_to_rom(uint32 entry)
 
 void QuitEmulator(void)
 {
-	Quit();
+	// Stop the PowerPC CPU - the emulation thread will then call Quit() for cleanup
+	QuitPowerPC();
 }
 
 
@@ -894,6 +897,28 @@ bool ChoiceAlert(const char *text, const char *pos, const char *neg)
 	printf(GetString(STR_SHELL_WARNING_PREFIX), text);
 	return false;	//!!
 }
+
+
+/*
+ *  Mac OS has finished booting notification
+ */
+
+void MacOSBootedNotification(void)
+{
+	mac_os_booted = true;
+	D(bug("Mac OS has finished booting\n"));
+}
+
+
+/*
+ *  Check if Mac OS has finished booting
+ */
+
+bool HasMacOSBooted(void)
+{
+	return mac_os_booted;
+}
+
 
 /*
  *  Low level keyboard hook allowing us to intercept events involving the Windows key

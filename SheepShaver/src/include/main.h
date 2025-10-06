@@ -49,6 +49,8 @@ extern void Dump68kRegs(M68kRegisters *r);					// Dump 68k registers
 extern void MakeExecutable(int dummy, uint32 start, uint32 length);	// Make code executable
 extern void PatchAfterStartup(void);						// Patches after system startup
 extern void QuitEmulator(void);								// Quit emulator (must only be called from main thread)
+extern void MacOSBootedNotification(void);					// Called when Mac OS has finished booting
+extern bool HasMacOSBooted(void);							// Check if Mac OS has finished booting
 extern void ErrorAlert(const char *text);					// Display error alert
 extern void WarningAlert(const char *text);					// Display warning alert
 extern bool ChoiceAlert(const char *text, const char *pos, const char *neg);	// Display choice alert
@@ -74,6 +76,7 @@ extern volatile uint32 InterruptFlags;						// Currently pending interrupts
 extern void SetInterruptFlag(uint32);
 extern void ClearInterruptFlag(uint32);
 extern void TriggerInterrupt(void);							// Trigger SIGUSR1 interrupt in emulator thread
+extern void QuitPowerPC(void);								// Stop PowerPC emulation
 extern void DisableInterrupt(void);							// Disable SIGUSR1 interrupt (can be nested)
 extern void EnableInterrupt(void);							// Enable SIGUSR1 interrupt (can be nested)
 

@@ -42,6 +42,9 @@
 #define DEBUG 0
 #import "debug.h"
 
+static NSLock *shutdownLock = nil;
+static BOOL shutdown_in_progress = NO;
+
 @implementation Emulator
 
 // NSWindow method, which is invoked via delegation
@@ -78,6 +81,10 @@
 
 	// We do this so that we can work out if we are in full screen mode:
 	parse_screen_prefs(PrefsFindString("screen"));
+
+	// Initialize shutdown lock
+	if (shutdownLock == nil)
+		shutdownLock = [[NSLock alloc] init];
 
 	[self createThreads];
 
@@ -324,8 +331,31 @@
 
 - (IBAction) Terminate: (id)sender;
 {
-	[self exitThreads];
-	[win performClose: self];
+	[shutdownLock lock];
+
+	if (shutdown_in_progress)
+	{
+		[shutdownLock unlock];
+		return;	// Shutdown already initiated
+	}
+
+	if (running && uaeCreated)
+	{
+		shutdown_in_progress = YES;
+		[shutdownLock unlock];
+
+		// Stop the CPU from the UI thread
+		Quit680x0();
+		// The emulation thread will handle cleanup and call [NSApp terminate]
+	}
+	else
+	{
+		shutdown_in_progress = YES;
+		[shutdownLock unlock];
+
+		[self exitThreads];
+		[win performClose: self];
+	}
 }
 
 #include <xpram.h>
@@ -417,10 +447,15 @@ uint8 lastXPRAM[XPRAM_SIZE];		// Copy of PRAM
 		Start680x0();			// Start 68k and jump to ROM boot routine
 
 		puts ("Emulator exited normally");
+
+		// CPU has stopped. Now do cleanup.
+		QuitEmuNoExit();
 	}
 
 	[pool release];
-	QuitEmulator();
+
+	// Notify UI that emulation has ended
+	[NSApp terminate: nil];
 }
 
 - (void) RTCinterrupt

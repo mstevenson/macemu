@@ -105,6 +105,8 @@ static bool lm_area_mapped = false;	// Flag: Low Memory area mmap()ped
 
 static HHOOK keyboard_hook; // Hook for intercepting windows key events
 
+static volatile bool mac_os_booted = false;		// Flag: Mac OS has finished booting
+
 
 // Prototypes
 static int xpram_func(void *arg);
@@ -738,6 +740,28 @@ bool ChoiceAlert(const char *text, const char *pos, const char *neg)
 	printf(GetString(STR_SHELL_WARNING_PREFIX), text);
 	return false;	//!!
 }
+
+
+/*
+ *  Mac OS has finished booting notification
+ */
+
+void MacOSBootedNotification(void)
+{
+	mac_os_booted = true;
+	D(bug("Mac OS has finished booting\n"));
+}
+
+
+/*
+ *  Check if Mac OS has finished booting
+ */
+
+bool HasMacOSBooted(void)
+{
+	return mac_os_booted;
+}
+
 
 /*
  *  Low level keyboard hook allowing us to intercept events involving the Windows key

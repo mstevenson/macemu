@@ -242,6 +242,7 @@ static pthread_t emul_thread;				// MacOS thread
 static int use_gui = -1;   					// Override prefs and show gui
 
 static bool ready_for_signals = false;		// Handler installed, signals can be sent
+static volatile bool mac_os_booted = false;		// Flag: Mac OS has finished booting
 
 #if EMULATED_PPC
 static uintptr sig_stack = 0;				// Stack for PowerPC interrupt routine
@@ -1431,10 +1432,22 @@ void Execute68kTrap(uint16 trap, M68kRegisters *r)
 void QuitEmulator(void)
 {
 #if EMULATED_PPC
-	Quit();
+	// Stop the PowerPC CPU - the emulation thread will then call Quit() for cleanup
+	QuitPowerPC();
 #else
 	quit_emulator();
 #endif
+}
+
+
+/*
+ *  Mac OS has finished booting notification
+ */
+
+void MacOSBootedNotification(void)
+{
+	mac_os_booted = true;
+	D(bug("Mac OS has finished booting\n"));
 }
 
 
@@ -2443,4 +2456,14 @@ bool ChoiceAlert(const char *text, const char *pos, const char *neg)
 {
 	printf(GetString(STR_SHELL_WARNING_PREFIX), text);
 	return false;	//!!
+}
+
+
+/*
+ *  Check if Mac OS has finished booting
+ */
+
+bool HasMacOSBooted(void)
+{
+	return mac_os_booted;
 }
