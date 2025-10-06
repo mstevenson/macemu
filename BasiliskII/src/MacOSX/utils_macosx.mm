@@ -114,6 +114,20 @@ void enable_fullscreen_button_osx(SDL_Window * window)
 	}
 }
 
+void set_window_aspect_ratio_osx(SDL_Window * window, int width, int height)
+{
+	if (!window || width <= 0 || height <= 0) {
+		return;
+	}
+
+	NSWindow *nsWindow = get_nswindow(window);
+	if (!nsWindow) {
+		return;
+	}
+
+	[nsWindow setContentAspectRatio:NSMakeSize(width, height)];
+}
+
 #endif // SDL_VERSION_ATLEAST(2, 0, 0)
 
 #if SDL_VERSION_ATLEAST(3, 0, 0) && defined(VIDEO_CHROMAKEY)

@@ -773,6 +773,7 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 		set_window_name();
 #ifdef __MACOSX__
 		enable_fullscreen_button_osx(sdl_window);
+		set_window_aspect_ratio_osx(sdl_window, window_width, window_height);
 #endif
 	}
 	
@@ -1703,7 +1704,9 @@ static void do_toggle_fullscreen(void)
 			const VIDEO_MODE &mode = drv->mode;
 			float m = get_mag_rate();
 			SDL_SetWindowSize(sdl_window, m * VIDEO_MODE_X, m * VIDEO_MODE_Y);
-#ifndef SDL_PLATFORM_MACOS
+#ifdef SDL_PLATFORM_MACOS
+			set_window_aspect_ratio_osx(sdl_window, VIDEO_MODE_X, VIDEO_MODE_Y);
+#else
 			SDL_SetWindowPosition(sdl_window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 #endif
 		} else {

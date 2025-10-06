@@ -472,6 +472,9 @@ OSX_monitor::init_window(const video_mode &mode)
 	}
 	resizeWinTo(mode.x, mode.y);
 
+	// Lock aspect ratio to match screen resolution
+	[the_win setContentAspectRatio: NSMakeSize(mode.x, mode.y)];
+
 
 	// Create frame buffer ("height + 2" for safety)
 	int the_buffer_size = mode.bytes_per_row * (mode.y + 2);
