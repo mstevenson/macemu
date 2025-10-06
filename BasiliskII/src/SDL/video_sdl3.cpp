@@ -727,7 +727,7 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
     
 	int window_width = width;
 	int window_height = height;
-	Uint32 window_flags = SDL_WINDOW_HIGH_PIXEL_DENSITY;
+	Uint32 window_flags = SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE;
 	const int window_flags_to_monitor = SDL_WINDOW_FULLSCREEN;
 	
 	if (flags & SDL_WINDOW_FULLSCREEN) {
@@ -771,6 +771,9 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 		}
 		SDL_SyncWindow(sdl_window); // needed for fullscreen
 		set_window_name();
+#ifdef __MACOSX__
+		enable_fullscreen_button_osx(sdl_window);
+#endif
 	}
 	
 	// Some SDL events (regarding some native-window events), need processing

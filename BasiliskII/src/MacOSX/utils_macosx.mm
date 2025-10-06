@@ -97,6 +97,23 @@ bool is_fullscreen_osx(SDL_Window * window)
 	return (styleMask & NSWindowStyleMaskFullScreen) != 0;
 }
 
+void enable_fullscreen_button_osx(SDL_Window * window)
+{
+	if (!window) {
+		return;
+	}
+    
+	NSWindow *nsWindow = get_nswindow(window);
+	if (!nsWindow) {
+		return;
+	}
+    
+	NSButton *fullscreenButton = [nsWindow standardWindowButton:NSWindowZoomButton];
+	if (fullscreenButton) {
+		[fullscreenButton setEnabled:YES];
+	}
+}
+
 #endif // SDL_VERSION_ATLEAST(2, 0, 0)
 
 #if SDL_VERSION_ATLEAST(3, 0, 0) && defined(VIDEO_CHROMAKEY)
