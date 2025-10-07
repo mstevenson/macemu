@@ -2140,6 +2140,20 @@ static int modify_opt_cmd(int code) {
 
 static int kc_decode(SDL_Keysym const & ks, bool key_down)
 {
+#ifdef __MACOSX__
+	// Intercept all key events when Fn key is held, passing through keys F1-F15
+	if (is_fn_key_pressed() && (ks.sym < SDLK_F1 || ks.sym > SDLK_F15)) {
+		if (ks.sym == SDLK_f) {
+            // Fn+F for fullscreen toggle
+			if (key_down) toggle_fullscreen = true;
+			return CODE_HOTKEY;
+		} else {
+			// Block all other keys
+			return CODE_HOTKEY;
+		}
+	}
+#endif
+
 	switch (ks.sym) {
 	case SDLK_a: return 0x00;
 	case SDLK_b: return 0x0b;
@@ -2232,6 +2246,9 @@ static int kc_decode(SDL_Keysym const & ks, bool key_down)
 	case SDLK_F10: return 0x6d;
 	case SDLK_F11: return 0x67;
 	case SDLK_F12: return 0x6f;
+	case SDLK_F13: return 0x69;
+	case SDLK_F14: return 0x6b;
+	case SDLK_F15: return 0x71;
 
 	case SDLK_PRINTSCREEN: return 0x69;
 	case SDLK_SCROLLLOCK: return 0x6b;
