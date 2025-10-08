@@ -2502,6 +2502,13 @@ static void handle_events(void)
 					case SDL_WINDOWEVENT_RESTORED:
 						force_complete_window_refresh();
 						break;
+
+					case SDL_WINDOWEVENT_SIZE_CHANGED:
+#ifdef SHEEPSHAVER
+						// Update cursor when window is resized
+						video_set_cursor();
+#endif
+						break;
 				}
 				break;
 			}
@@ -2975,6 +2982,10 @@ extern "C" void video_set_mag_rate(float rate)
 		SDL_SetWindowSize(sdl_window, rate * VIDEO_MODE_X, rate * VIDEO_MODE_Y);
 #ifdef __APPLE__
 		set_window_aspect_ratio_osx(sdl_window, VIDEO_MODE_X, VIDEO_MODE_Y);
+#endif
+#ifdef SHEEPSHAVER
+		// Update cursor to match new magnification
+		video_set_cursor();
 #endif
 	}
 }

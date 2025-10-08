@@ -2469,6 +2469,13 @@ static void handle_events(void)
 				force_complete_window_refresh();
 				break;
 
+			case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+#ifdef SHEEPSHAVER
+				// Update cursor when window is resized
+				video_set_cursor();
+#endif
+				break;
+
 			// Window "close" widget clicked
 			case SDL_EVENT_QUIT:
 				if (SDL_GetModState() & (SDL_KMOD_LALT | SDL_KMOD_RALT)) break;
@@ -2938,6 +2945,10 @@ extern "C" void video_set_mag_rate(float rate)
 		SDL_SetWindowSize(sdl_window, rate * VIDEO_MODE_X, rate * VIDEO_MODE_Y);
 #ifdef SDL_PLATFORM_MACOS
 		set_window_aspect_ratio_osx(sdl_window, VIDEO_MODE_X, VIDEO_MODE_Y);
+#endif
+#ifdef SHEEPSHAVER
+		// Update cursor to match new magnification
+		video_set_cursor();
 #endif
 	}
 }
