@@ -154,6 +154,8 @@ static SDL_Texture * sdl_texture = NULL;			// Handle to a GPU texture, with whic
 static SDL_Rect sdl_update_video_rect = {0,0,0,0};  // Union of all rects to update, when updating sdl_texture
 static SDL_Mutex * sdl_update_video_mutex = NULL;   // Mutex to protect sdl_update_video_rect
 static int screen_depth;							// Depth of current screen
+static int saved_window_x = SDL_WINDOWPOS_UNDEFINED;	// Saved window X position for resolution changes
+static int saved_window_y = SDL_WINDOWPOS_UNDEFINED;	// Saved window Y position for resolution changes
 #ifdef SHEEPSHAVER
 static SDL_Cursor *sdl_cursor = NULL;				// Copy of Mac cursor
 #endif
@@ -744,6 +746,8 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 			old_window_height != window_height ||
 			(old_window_flags & window_flags_to_monitor) != (window_flags & window_flags_to_monitor))
 		{
+			// Save window position before destroying it
+			SDL_GetWindowPosition(sdl_window, &saved_window_x, &saved_window_y);
 			delete_sdl_video_window();
 		}
 	}
@@ -768,6 +772,15 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 		if (!sdl_window) {
 			shutdown_sdl_video();
 			return NULL;
+		}
+		// Set window position if we have a saved position
+		if (saved_window_x != SDL_WINDOWPOS_UNDEFINED && saved_window_x != SDL_WINDOWPOS_CENTERED) {
+			SDL_SetWindowPosition(sdl_window, saved_window_x, saved_window_y);
+		}
+		// Reset saved position after use (but only if it was centered/undefined)
+		if (saved_window_x == SDL_WINDOWPOS_UNDEFINED || saved_window_x == SDL_WINDOWPOS_CENTERED) {
+			saved_window_x = SDL_WINDOWPOS_UNDEFINED;
+			saved_window_y = SDL_WINDOWPOS_UNDEFINED;
 		}
 		SDL_SyncWindow(sdl_window); // needed for fullscreen
 		set_window_name();
