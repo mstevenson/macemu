@@ -196,3 +196,102 @@ bool MetalIsAvailable() {
 	[dev release];
 	return r;
 }
+
+#if SDL_VERSION_ATLEAST(2, 0, 0)
+
+// Forward declaration
+extern "C" void video_set_mag_rate(float rate);
+
+@interface MagnificationMenuDelegate : NSObject
+@end
+
+@implementation MagnificationMenuDelegate
+- (void)setMagnification:(id)sender {
+	NSMenuItem *menuItem = (NSMenuItem *)sender;
+	NSInteger tag = [menuItem tag];
+	float magRate;
+
+	// Convert tag to magnification rate
+	if (tag == 15) {
+		magRate = 1.5f;
+	} else if (tag == 25) {
+		magRate = 2.5f;
+	} else {
+		magRate = (float)tag;
+	}
+
+	// Update the magnification rate
+	video_set_mag_rate(magRate);
+}
+@end
+
+static MagnificationMenuDelegate *g_magnificationDelegate = nil;
+
+void setup_magnification_menu_osx() {
+	// Create delegate if needed
+	if (!g_magnificationDelegate) {
+		g_magnificationDelegate = [[MagnificationMenuDelegate alloc] init];
+	}
+
+	// Find the Window menu
+	NSMenu *mainMenu = [NSApp mainMenu];
+	NSMenuItem *windowMenuItem = nil;
+
+	for (NSMenuItem *item in [mainMenu itemArray]) {
+		if ([[item title] isEqualToString:@"Window"]) {
+			windowMenuItem = item;
+			break;
+		}
+	}
+
+	if (!windowMenuItem) {
+		return; // Window menu not found
+	}
+
+	NSMenu *windowMenu = [windowMenuItem submenu];
+
+	// Check if magnification submenu already exists
+	for (NSMenuItem *item in [windowMenu itemArray]) {
+		if ([[item title] isEqualToString:@"Magnification"]) {
+			return; // Already exists
+		}
+	}
+
+	// Add separator if the menu is not empty
+	if ([[windowMenu itemArray] count] > 0) {
+		[windowMenu addItem:[NSMenuItem separatorItem]];
+	}
+
+	// Create magnification submenu
+	NSMenu *magnificationMenu = [[NSMenu alloc] initWithTitle:@"Magnification"];
+
+	// Add menu items for different magnification levels
+	NSArray *items = @[
+		@{@"title": @"1x", @"tag": @1},
+		@{@"title": @"1.5x", @"tag": @15},
+		@{@"title": @"2x", @"tag": @2},
+		@{@"title": @"2.5x", @"tag": @25},
+		@{@"title": @"3x", @"tag": @3}
+	];
+
+	for (NSDictionary *itemInfo in items) {
+		NSMenuItem *item = [[NSMenuItem alloc] initWithTitle:itemInfo[@"title"]
+													  action:@selector(setMagnification:)
+											   keyEquivalent:@""];
+		[item setTag:[itemInfo[@"tag"] integerValue]];
+		[item setTarget:g_magnificationDelegate];
+		[magnificationMenu addItem:item];
+		[item release];
+	}
+
+	// Add magnification submenu to window menu
+	NSMenuItem *magnificationMenuItem = [[NSMenuItem alloc] initWithTitle:@"Magnification"
+																   action:nil
+															keyEquivalent:@""];
+	[magnificationMenuItem setSubmenu:magnificationMenu];
+	[windowMenu addItem:magnificationMenuItem];
+	[magnificationMenuItem release];
+	[magnificationMenu release];
+}
+
+#endif // SDL_VERSION_ATLEAST(2, 0, 0)

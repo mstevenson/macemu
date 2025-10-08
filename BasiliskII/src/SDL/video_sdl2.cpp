@@ -804,9 +804,11 @@ static SDL_Surface *init_sdl_video(int width, int height, int depth, Uint32 flag
 	if (!did_add_event_watch) {
 		SDL_AddEventWatch(&on_sdl_event_generated, NULL);
 		did_add_event_watch = true;
-#ifdef __MACOSX__
+#ifdef __APPLE__
 		// Install macOS-native event handler for Fn+F hotkey
 		install_macosx_hotkey_handler(macosx_toggle_fullscreen_callback);
+		// Setup magnification menu
+		setup_magnification_menu_osx();
 #endif
 	}
 
@@ -2951,6 +2953,30 @@ void video_set_dirty_area(int x, int y, int w, int h)
 #endif
 
 	// XXX handle dirty bounding boxes for non-VOSF modes
+}
+#endif
+
+
+/*
+ *  Set magnification rate and resize window
+ */
+
+#ifdef __APPLE__
+extern "C" void video_set_mag_rate(float rate)
+{
+	// Update the preference
+	char mag_str[32];
+	snprintf(mag_str, sizeof(mag_str), "%.1f", rate);
+	PrefsReplaceString("mag_rate", mag_str);
+
+	// Resize the window if it's not in fullscreen mode
+	if (sdl_window && display_type == DISPLAY_WINDOW) {
+		const VIDEO_MODE &mode = drv->mode;
+		SDL_SetWindowSize(sdl_window, rate * VIDEO_MODE_X, rate * VIDEO_MODE_Y);
+#ifdef __APPLE__
+		set_window_aspect_ratio_osx(sdl_window, VIDEO_MODE_X, VIDEO_MODE_Y);
+#endif
+	}
 }
 #endif
 

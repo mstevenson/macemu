@@ -30,6 +30,7 @@ void remove_macosx_hotkey_handler();
 bool is_fn_key_pressed();
 void enable_fullscreen_button_osx(SDL_Window * window);
 void set_window_aspect_ratio_osx(SDL_Window * window, int width, int height);
+void setup_magnification_menu_osx();
 #endif
 #endif
 
