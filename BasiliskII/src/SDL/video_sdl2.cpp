@@ -1036,30 +1036,105 @@ void update_sdl_video(SDL_Surface *s, Sint32 x, Sint32 y, Sint32 w, Sint32 h)
 }
 
 #ifdef SHEEPSHAVER
-static void MagBits(Uint8 *dst, Uint8 *src, int size) {
-	float s = 16.f / size;
-	for (int y = 0; y < size; y++)
-		for (int x = 0; x < size; x++) {
-			int sa = 16 * int(y * s) + int(x * s);
-			if (src[sa >> 3] & 0x80 >> (sa & 7)) {
-				int da = (size + 7 & ~7) * y + x;
-				dst[da >> 3] |= 0x80 >> (da & 7);
-			}
-		}
+// Helper function to get bit value from bitmap
+static inline bool GetBit(const Uint8 *bitmap, int x, int y, int width) {
+	if (x < 0 || x >= width || y < 0 || y >= width) return false;
+	int bit_index = y * width + x;
+	return (bitmap[bit_index >> 3] & (0x80 >> (bit_index & 7))) != 0;
 }
+
+// Sample bitmap with bilinear interpolation, returns value 0.0-1.0
+static inline float SampleBitmapBilinear(const Uint8 *src, float src_x, float src_y, int src_size) {
+	int x0 = (int)floorf(src_x);
+	int y0 = (int)floorf(src_y);
+	float fx = src_x - x0;
+	float fy = src_y - y0;
+
+	// Sample the four nearest pixels
+	float p00 = GetBit(src, x0,     y0,     src_size) ? 1.0f : 0.0f;
+	float p10 = GetBit(src, x0 + 1, y0,     src_size) ? 1.0f : 0.0f;
+	float p01 = GetBit(src, x0,     y0 + 1, src_size) ? 1.0f : 0.0f;
+	float p11 = GetBit(src, x0 + 1, y0 + 1, src_size) ? 1.0f : 0.0f;
+
+	// Bilinear interpolation
+	float v0 = p00 * (1.0f - fx) + p10 * fx;
+	float v1 = p01 * (1.0f - fx) + p11 * fx;
+	return v0 * (1.0f - fy) + v1 * fy;
+}
+
 static SDL_Cursor *MagCursor(bool hot) {
 	int w, h;
 	SDL_GetWindowSize(sdl_window, &w, &h);
 	float mag = std::min((float)w / drv->VIDEO_MODE_X, (float)h / drv->VIDEO_MODE_Y);
-	int size = ceilf(16 * mag), n = ((size + 7) >> 3) * size;
-	Uint8 *data = (Uint8 *)SDL_calloc(n, 2);
-	Uint8 *mask = (Uint8 *)SDL_calloc(n, 2);
-	MagBits(data, &MacCursor[4], size);
-	MagBits(mask, &MacCursor[36], size);
-	SDL_Cursor *cursor = SDL_CreateCursor(data, mask, size, size, hot ? MacCursor[2] * mag : 0, hot ? MacCursor[3] * mag : 0);
-	SDL_free(data);
-	SDL_free(mask);
-	return cursor;
+
+	// If integer scaling is enabled, round down to integer scale
+	if (PrefsFindBool("scale_integer")) {
+		mag = floorf(mag);
+		if (mag < 1.0f) mag = 1.0f;
+	}
+
+	int size = ceilf(16 * mag);
+	bool use_nearest = PrefsFindBool("scale_nearest");
+
+	if (use_nearest) {
+		// Use legacy 1-bit cursor with nearest-neighbor sampling
+		int n = ((size + 7) >> 3) * size;
+		Uint8 *data = (Uint8 *)SDL_calloc(n, 2);
+		Uint8 *mask = (Uint8 *)SDL_calloc(n, 2);
+
+		const int src_size = 16;
+		float scale = (float)src_size / size;
+
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				int sa = 16 * int(y * scale) + int(x * scale);
+				if (MacCursor[4 + (sa >> 3)] & (0x80 >> (sa & 7))) {
+					int da = (size + 7 & ~7) * y + x;
+					data[da >> 3] |= 0x80 >> (da & 7);
+				}
+				if (MacCursor[36 + (sa >> 3)] & (0x80 >> (sa & 7))) {
+					int da = (size + 7 & ~7) * y + x;
+					mask[da >> 3] |= 0x80 >> (da & 7);
+				}
+			}
+		}
+
+		SDL_Cursor *cursor = SDL_CreateCursor(data, mask, size, size, hot ? MacCursor[2] * mag : 0, hot ? MacCursor[3] * mag : 0);
+		SDL_free(data);
+		SDL_free(mask);
+		return cursor;
+	} else {
+		// Use color cursor with bilinear interpolation for antialiasing
+		const int src_size = 16;
+		float scale = (float)src_size / size;
+
+		SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormat(0, size, size, 32, SDL_PIXELFORMAT_ARGB8888);
+		if (!surface) return NULL;
+
+		Uint32 *pixels = (Uint32 *)surface->pixels;
+
+		for (int y = 0; y < size; y++) {
+			for (int x = 0; x < size; x++) {
+				// Calculate source coordinates with subpixel precision
+				float src_x = (x + 0.5f) * scale - 0.5f;
+				float src_y = (y + 0.5f) * scale - 0.5f;
+
+				// Sample data and mask with bilinear interpolation
+				float data_value = SampleBitmapBilinear(&MacCursor[4], src_x, src_y, src_size);
+				float mask_value = SampleBitmapBilinear(&MacCursor[36], src_x, src_y, src_size);
+
+				// Convert to ARGB: opaque where mask is set, black where data is set
+				Uint8 alpha = (Uint8)(mask_value * 255.0f);
+				Uint8 color = (Uint8)((1.0f - data_value) * 255.0f);
+
+				pixels[y * size + x] = (alpha << 24) | (color << 16) | (color << 8) | color;
+			}
+		}
+
+		SDL_Cursor *cursor = SDL_CreateColorCursor(surface, hot ? MacCursor[2] * mag : 0, hot ? MacCursor[3] * mag : 0);
+		SDL_FreeSurface(surface);
+		return cursor;
+	}
 }
 #endif
 
